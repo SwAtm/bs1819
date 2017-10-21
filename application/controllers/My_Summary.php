@@ -74,15 +74,29 @@ class My_Summary extends CI_Controller{
 			$_POST['tr_code']=$trcode->tr_code;
 			$trno=$this->Summary_model->gettranno($_POST['tr_code']);
 			$_POST['tr_no']=$trno;
-			//print_r($_POST);
 			$_POST['date']=date('Y-m-d',strtotime($_POST['date']));
+			print_r($_POST);
+			echo "Post<br>";
 			if ($this->Summary_model->adddata($_POST)):
 				$summary_id=$this->Summary_model->getmaxid();
 				$details=$this->Temp_details_model->getall();
 				print_r($details);
+				echo "Details<br>";
 				print $summary_id;
-				$this->Details_model->adddata($details);
-				//$this->Temp_details_model->delete();
+				echo "summary_id<br>";
+				foreach ($details as $row):
+					print_r($row);
+					echo "row<br>";
+					foreach ($row as $k=>$v):
+					$det[$k]=$v;
+					$det['summary_id']=$summary_id;
+					endforeach;
+					unset ($det['id']);
+					$this->Details_model->adddata($det);
+					print_r($det);
+					echo "det<br>";
+				endforeach;
+				$this->Temp_details_model->delete();
 				echo "Record added.<a href=".site_url('home').">Go Home</a>";
 			else:
 				echo "Record not added.<a href=".site_url('home').">Go Home</a>";

@@ -42,7 +42,7 @@ class Summary_model extends CI_Model{
 		$sql=$this->db->from('summary');
 		$sql=$this->db->get();
 		$id=$sql->row()->id;
-		return $id+1;
+		return $id;
 		
 
 	}
