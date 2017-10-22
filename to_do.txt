@@ -1,4 +1,0 @@
-party:
-add a call back to failed delete due to fk constraint
-location:
-home should populate from company info
