@@ -28,13 +28,13 @@ class Temp_details extends CI_Controller{
 			$crud->callback_add_field('quantity',array($this,'add_default_qty'));
 			$crud->callback_add_field('discount',array($this,'add_default_disc'));
 			$crud->callback_add_field('cashdisc',array($this,'add_default_cdisc'));
-			$crud->callback_after_insert(array($this, 'redirection_page'));
+			//$crud->callback_after_insert(array($this, 'redirection_page'));
 
 			//set relations:
 		$crud->set_relation('item_id','item','{title}--{code}--{rate}');
 		$output = $crud->render();
 		$state = $crud->getState();
-        if ($state=='list'): 
+        if ($state=='list'||$state=='success'): 
 			$output->extra = "<a href=".site_url('My_Summary/add').">Complete Transaction</a>";
         else:
 			$output->extra = '';	
