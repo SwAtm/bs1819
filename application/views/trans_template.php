@@ -31,7 +31,7 @@ a:hover
 </head>
 <body>
 	<div>
-	<?php echo "<a href=".site_url('My_Summary/add').">Complete Transaction</a>"?>
+	<?php echo $extra?>
 	</div>
     <div style='height:20px;'></div>  
     <div>
