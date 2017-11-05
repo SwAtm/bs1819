@@ -15,8 +15,8 @@
     
     <li><a href="#">Transactions</a>
         <ul class="sub">
-            <li><a href="<?php echo site_url('temp_details/temp_details')?>">Add Transaction</a></li>
-            <li><a href="<?php echo site_url('summary/edit')?>">Edit Transaction</a></li>
+            <li><a href="<?php echo site_url('temp_details/add')?>">Add Transaction</a></li>
+            <li><a href="<?php echo site_url('summary/summary')?>">Edit Transaction</a></li>
         </ul>
     </li>
     <li><a href="#">Item 3</a>

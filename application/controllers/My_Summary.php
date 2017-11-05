@@ -18,16 +18,7 @@ class My_Summary extends CI_Controller{
 		$this->output->enable_profiler(TRUE);
 }
 
-	public function index()
-	{
-	echo "Summary Home";
-	}
-
-		public function summary()
-	{
-	echo "Summary Home";
-	}
-
+	
 	public function add()
 	{
 
@@ -36,11 +27,19 @@ class My_Summary extends CI_Controller{
 	$this->form_validation->set_rules('party_id', 'Party ID', 'required');
 	$this->form_validation->set_rules('date', 'Date', 'required');
 	//new or failed
-	
+	if (isset($_POST['cancel'])):
+		$this->Temp_details_model->delete();
+		redirect ('home','refresh');
+	endif;	
 	
 	if ($this->form_validation->run()==false):
 		if(!$this->Temp_details_model->getall()):
-		die ("No details entered. <a href=".site_url('home').">Go Home</a>");
+		$this->load->view('templates/header');
+		$data['message']='No details entered';
+		$this->load->view('templates/message',$data);    
+		$this->load->view('templates/footer');
+		$this->output->_display();
+		exit;
 		endif;
 	
 		$trantype=$this->Tran_type_model->getall();
@@ -62,139 +61,53 @@ class My_Summary extends CI_Controller{
 		$this->load->view('templates/footer');
 	else:
 	//valid
-		if (isset($_POST['cancel'])):
-			$this->Temp_details_model->delete();
-			redirect ('home','refresh');
-		else:
 		
-			echo "valid";
-			unset ($_POST['submit']);
-			$tid=$_POST['tran_type_id'];
-			$trcode=$this->Tran_type_model->gettrcode($tid);
-			$_POST['tr_code']=$trcode->tr_code;
-			$trno=$this->Summary_model->gettranno($_POST['tr_code']);
-			$_POST['tr_no']=$trno;
-			$_POST['date']=date('Y-m-d',strtotime($_POST['date']));
-			print_r($_POST);
-			echo "Post<br>";
-			if ($this->Summary_model->adddata($_POST)):
-				$summary_id=$this->Summary_model->getmaxid();
-				$details=$this->Temp_details_model->getall();
-				print_r($details);
-				echo "Details<br>";
-				print $summary_id;
-				echo "summary_id<br>";
-				foreach ($details as $row):
-					print_r($row);
-					echo "row<br>";
-					foreach ($row as $k=>$v):
-					$det[$k]=$v;
-					$det['summary_id']=$summary_id;
-					endforeach;
-					unset ($det['id']);
-					$this->Details_model->adddata($det);
-					print_r($det);
-					echo "det<br>";
+		
+		echo "valid";
+		unset ($_POST['submit']);
+		$tid=$_POST['tran_type_id'];
+		$trcode=$this->Tran_type_model->gettrcode($tid);
+		$_POST['tr_code']=$trcode->tr_code;
+		$trno=$this->Summary_model->gettranno($_POST['tr_code']);
+		$_POST['tr_no']=$trno;
+		$_POST['date']=date('Y-m-d',strtotime($_POST['date']));
+		print_r($_POST);
+		echo "Post<br>";
+		if ($this->Summary_model->adddata($_POST)):
+			$summary_id=$this->Summary_model->getmaxid();
+			$details=$this->Temp_details_model->getall();
+			print_r($details);
+			echo "Details<br>";
+			print $summary_id;
+			echo "summary_id<br>";
+			foreach ($details as $row):
+				print_r($row);
+				echo "row<br>";
+				foreach ($row as $k=>$v):
+				$det[$k]=$v;
+				$det['summary_id']=$summary_id;
 				endforeach;
-				$this->Temp_details_model->delete();
-				echo "Record added.<a href=".site_url('home').">Go Home</a>";
-			else:
-				echo "Record not added.<a href=".site_url('home').">Go Home</a>";
-			endif;
+				unset ($det['id']);
+				$this->Details_model->adddata($det);
+				print_r($det);
+				echo "det<br>";
+			endforeach;
+			$this->Temp_details_model->delete();
+			echo "Record added.<a href=".site_url('home').">Go Home</a>";
+		else:
+			echo "Record not added.<a href=".site_url('home').">Go Home</a>";
+		
 		endif;	
 	endif;
 
 
 
-
-
-/*			$crud = new grocery_CRUD();
-			$crud->set_table('summary')
-				->set_subject('Summary')
-				->columns('tran_type_id','tr_code','tr_no','date', 'party_id', 'expenses', 'remark')
-				->display_as('tran_type_id','Transaction Type')
-				->display_as('tr_code','Transaction Code')
-				->display_as('tr_no','Transaction Number')
-				->display_as('date','Date')
-				->display_as('party_id','Party')
-				->display_as('expenses','Exenses')
-				->display_as('remark','Remark')
-				->fields('tran_type_id','tr_code','tr_no','date','party_id','expenses','remark')
-				->field_type('tr_no','invisible')
-				->field_type('tr_code','invisible')
-				->required_fields('tran_type_id','date','party_id');
-				$crud->callback_before_insert(array($this,'get_tr'));
-				$operation=$crud->getState();
-				if($operation == 'edit' || $operation == 'update' || $operation == 'update_validation'):
-				$crud->field_type('tran_type_id','readonly')
-					->required_fields('date','party_id');
-
-				endif;
-				//$crud->callback_before_update(array($this,'get_trcode'));
-			//$crud->callback_add_field('discount',array($this,'add_default_disc'));
-			//$crud->callback_add_field('cashdisc',array($this,'add_default_cdisc'));
-			//set relations:
-			$crud->set_relation('tran_type_id','tran_type','{location}--{descrip_1}---{descrip_2}');
-			$crud->set_relation('party_id','party','{name}--{city}');
-			$output = $crud->render();
-			$this->_example_output($output);                
-*/
 }
 			
 			
-		public function edit()
-		{
-		echo "Summary";
 		
-		}	
 			
-		function get_tr($post_array)
-		{
-			$query=$this->db->select('tr_code');
-			$query=$this->db->from('tran_type');
-			$query=$this->db->where('id', $post_array['tran_type_id']);
-			$query=$this->db->get();
-			$tr_code=$query->row()->tr_code;
-			$post_array['tr_code']=$tr_code;
-			
-			
-			
-			$query=$this->db->select_max('tr_no');
-			$query=$this->db->from('summary');
-			$query=$this->db->where('tr_code', $post_array['tr_code']);
-			$query=$this->db->get();
-			if ($query):
-				$tr_no=$query->row()->tr_no;
-				$tr_no=$tr_no+1;
-			else:
-				$tr_no=1;
-			endif;
-			$post_array['tr_no']=$tr_no;
-			
-			
-			return $post_array;
-			
-			
-		}	
-			
-		function get_trcode($post_array)
-		{
-			$query=$this->db->select('tr_code');
-			$query=$this->db->from('tran_type');
-			$query=$this->db->where('id', $post_array['tran_type_id']);
-			$query=$this->db->get();
-			$tr_code=$query->row()->tr_code;
-			$post_array['tr_code']=$tr_code;
-				return $post_array;
-			}	
-			
-			
-			function _example_output($output = null)
-	{
-		$this->load->view('templates/header');
-		$this->load->view('our_template.php',$output);    
-		$this->load->view('templates/footer');
-	}    
+		
 
 
 
