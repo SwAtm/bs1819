@@ -47,6 +47,31 @@ class Summary_model extends CI_Model{
 
 	}
 
+	public function getdetails($id)
+	//called by my_summary/edit
+	{
+		$sql=$this->db->select('*');
+		$sql=$this->db->from('summary');
+		$sql=$this->db->where('id',$id);
+		$sql=$this->db->get();
+		$row=$sql->row();
+		return $row;
+	}
+	
+	public function getdescr($id)
+	//called by my_summary/edit
+	{
+		$sql=$this->db->select('tran_type.descrip_1');
+		$sql=$this->db->from('tran_type');
+		$sql=$this->db->join('summary', 'summary.tr_code=tran_type.tr_code');
+		$sql=$this->db->where('summary.id',$id);
+		$res=$this->db->get();
+		$trtype=$res->row()->descrip_1;
+		return $trtype;
+	}
+	
+	
+
 
 }
 ?>

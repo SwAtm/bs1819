@@ -103,7 +103,25 @@ class My_Summary extends CI_Controller{
 
 
 }
-			
+	
+	
+	public function edit($id=null)
+	{
+	$id=$this->uri->segment(3);
+	$det=$this->Summary_model->getdetails($id);
+	$date=$det->date;
+	$descr=$this->Summary_model->getdescr($id);
+	echo $date."<br>";
+	echo $descr."<br>";
+	if ($descr=="Cash" and $date!=date("Y-m-d")):
+		echo "Cannot edit earlier cash transactions <a href=".site_url('home').">Go Home</a>";
+	else:
+		echo "Can edit <a href=".site_url('home').">Go Home</a>";
+	endif;
+	
+	
+	
+	}		
 			
 		
 			

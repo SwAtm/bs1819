@@ -34,9 +34,10 @@ class Summary extends CI_Controller{
 				->display_as('remark','Remark')
 				->fields('tran_type_id','tr_code','tr_no','date','party_id','expenses','remark')
 				->unset_add()
-				//->unset_edit()
-				//->unset_delete()
-				->add_action('Edit', base_url('application/pencil.png'), 'My_summary/edit');
+				//->callback_before_edit(array($this,'checkedit'))
+				->unset_edit()
+				->unset_delete()
+				->add_action('Edit',base_url('application/pencil.png'), 'My_Summary/edit',base_url('application/pencil.png'));
 		
 				$operation=$crud->getState();
 				if($operation == 'edit' || $operation == 'update' || $operation == 'update_validation'):
@@ -54,7 +55,25 @@ class Summary extends CI_Controller{
 
 	}
 
-
+		public function checkedit($id)
+		{
+		$sql=$this->db->select('tran_type.descrip1');
+		$sql=$this->db->from('tran_type');
+		$sql=$this->db->join('summary', 'summary.tr_code=tran_type.tr_code');
+		$sql=$this->db->where('sumamry.id',$id);
+		$res=$this->db->get();
+		$trtype=$res->row()->descrip1;
+		$sql=$this->db->select('summary.date');
+		$sql=$this->db->from('summary');
+		$sql=$this->db->where('sumamry.id',$id);
+		$res=$this->db->get();
+		$dt=$res->row()->date;
+	if ($trantype=='cash' AND $data!=date()):
+		return false;
+	else:
+		return true;
+	endif;
+		}
 			
 		function _example_output($output = null)
 	{
