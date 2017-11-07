@@ -36,8 +36,9 @@ class Summary extends CI_Controller{
 				->unset_add()
 				//->callback_before_edit(array($this,'checkedit'))
 				->unset_edit()
+				->set_theme('datatables')
 				->unset_delete()
-				->add_action('Edit',base_url('application/pencil.png'), 'My_Summary/edit',base_url('application/pencil.png'));
+				->add_action('Edit',base_url('application/pencil.png'), 'My_Summary/edit');
 		
 				$operation=$crud->getState();
 				if($operation == 'edit' || $operation == 'update' || $operation == 'update_validation'):

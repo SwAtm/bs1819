@@ -113,7 +113,7 @@ class My_Summary extends CI_Controller{
 	$descr=$this->Summary_model->getdescr($id);
 	echo $date."<br>";
 	echo $descr."<br>";
-	if ($descr=="Cash" and $date!=date("Y-m-d")):
+	if (ucfirst($descr)=="Cash" and $date!=date("Y-m-d")):
 		echo "Cannot edit earlier cash transactions <a href=".site_url('home').">Go Home</a>";
 	else:
 		echo "Can edit <a href=".site_url('home').">Go Home</a>";
