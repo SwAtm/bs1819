@@ -110,12 +110,19 @@ class My_Summary extends CI_Controller{
 	$id=$this->uri->segment(3);
 	$det=$this->Summary_model->getdetails($id);
 	$date=$det->date;
-	$descr=$this->Summary_model->getdescr($id);
+	$trantype=$this->Summary_model->getdescr($id);
+	$descr=$trantype->descrip_1;
 	echo $date."<br>";
 	echo $descr."<br>";
 	if (ucfirst($descr)=="Cash" and $date!=date("Y-m-d")):
 		echo "Cannot edit earlier cash transactions <a href=".site_url('home').">Go Home</a>";
 	else:
+		$data['det']=$det;
+		$data['trantype']=$trantype;
+		//$data['party']=$party1;
+		$this->load->view('templates/header');
+		$this->load->view('summary/edit_summary',$data);    
+		$this->load->view('templates/footer');
 		echo "Can edit <a href=".site_url('home').">Go Home</a>";
 	endif;
 	
@@ -123,7 +130,24 @@ class My_Summary extends CI_Controller{
 	
 	}		
 			
-		
+	public function delete($id=null)
+	{
+			
+	$id=$this->uri->segment(3);
+	$det=$this->Summary_model->getdetails($id);
+	$date=$det->date;
+	$trantype=$this->Summary_model->getdescr($id);
+	$descr=$trantype->descrip_1;
+	
+	echo $date."<br>";
+	echo $descr."<br>";
+	if (ucfirst($descr)=="Cash" and $date!=date("Y-m-d")):
+		echo "Cannot delete earlier cash transactions <a href=".site_url('home').">Go Home</a>";
+	else:
+		echo "Can delete <a href=".site_url('home').">Go Home</a>";
+	endif;
+	
+		}	
 			
 		
 
