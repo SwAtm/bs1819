@@ -18,7 +18,7 @@ $(document).ready(function() {
 <?php
 echo validation_errors();
 echo "<table border=1 align=center width=50%)";
-echo "<tr><td colspan=2 align=center>Complete Transaction</td></tr>";
+echo "<tr><td colspan=2 align=center>Complete Transaction. Cash transactions will always be for today</td></tr>";
 echo form_open('My_Summary/add');
 echo "<tr><td>Select Transaction Type</td><td>".form_dropdown('tran_type_id',$transact,'5')."</td></tr>";
 echo "<tr><td>Date</td><td>".form_input(array('name'=>'date','id'=>'dt'))."</td></tr>";

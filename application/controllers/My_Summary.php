@@ -67,10 +67,21 @@ class My_Summary extends CI_Controller{
 		unset ($_POST['submit']);
 		$tid=$_POST['tran_type_id'];
 		$trcode=$this->Tran_type_model->gettrcode($tid);
+		print_r($trcode);
 		$_POST['tr_code']=$trcode->tr_code;
 		$trno=$this->Summary_model->gettranno($_POST['tr_code']);
 		$_POST['tr_no']=$trno;
-		$_POST['date']=date('Y-m-d',strtotime($_POST['date']));
+		$descr=$trcode->descrip_1;
+		//for cash date should be today
+		if ((strtoupper($descr)=="CASH")):
+			$_POST['date']=date('Y-m-d');
+		else:
+			$_POST['date']=date('Y-m-d',strtotime($_POST['date']));
+		endif;
+		//for cash/bank party should be walk in 
+		if ((strtoupper($descr)=="CASH")||(strtoupper($descr)=="BANK")):
+		$_POST['party_id']=1048;
+		endif;
 		print_r($_POST);
 		echo "Post<br>";
 		if ($this->Summary_model->adddata($_POST)):
@@ -117,18 +128,42 @@ class My_Summary extends CI_Controller{
 	if (ucfirst($descr)=="Cash" and $date!=date("Y-m-d")):
 		echo "Cannot edit earlier cash transactions <a href=".site_url('home').">Go Home</a>";
 	else:
+		$party=$this->Party_model->getall();
+		foreach ($party as $p):
+		$party1[$p['id']]=$p['name']." ".$p['city'];
+		endforeach;
+		unset ($party);
+		$data['party']=$party1;
 		$data['det']=$det;
 		$data['trantype']=$trantype;
 		//$data['party']=$party1;
+		print_r($det);
+		echo "<br>";
 		$this->load->view('templates/header');
 		$this->load->view('summary/edit_summary',$data);    
 		$this->load->view('templates/footer');
 		echo "Can edit <a href=".site_url('home').">Go Home</a>";
 	endif;
 	
-	
-	
 	}		
+			
+	
+	public function edit_summary()
+	//validation rules:
+	{
+	$this->form_validation->set_rules('tran_type_id', 'Tran Type ID', 'required');
+	$this->form_validation->set_rules('party_id', 'Party ID', 'required');
+	$this->form_validation->set_rules('date', 'Date', 'required');
+	if ($this->form_validation->run()==false):
+	echo "Invalid<br>";
+	print_r($_POST);
+	else:
+	echo "Valid<br>";
+	echo "not posted";
+	endif;
+}		
+			
+			
 			
 	public function delete($id=null)
 	{

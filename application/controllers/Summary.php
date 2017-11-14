@@ -57,7 +57,7 @@ class Summary extends CI_Controller{
 
 	}
 
-		public function checkedit($id)
+	/*	public function checkedit($id)
 		{
 		$sql=$this->db->select('tran_type.descrip1');
 		$sql=$this->db->from('tran_type');
@@ -76,7 +76,7 @@ class Summary extends CI_Controller{
 		return true;
 	endif;
 		}
-			
+*/			
 		function _example_output($output = null)
 	{
 		$this->load->view('templates/header');
