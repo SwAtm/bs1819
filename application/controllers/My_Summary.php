@@ -118,52 +118,43 @@ class My_Summary extends CI_Controller{
 	
 	public function edit($id=null)
 	{
-	$id=$this->uri->segment(3);
-	$det=$this->Summary_model->getdetails($id);
-	$date=$det->date;
-	$trantype=$this->Summary_model->getdescr($id);
-	$descr=$trantype->descrip_1;
-	echo $date."<br>";
-	echo $descr."<br>";
-	if (ucfirst($descr)=="Cash" and $date!=date("Y-m-d")):
-		echo "Cannot edit earlier cash transactions <a href=".site_url('home').">Go Home</a>";
-	else:
-		$party=$this->Party_model->getall();
-		foreach ($party as $p):
-		$party1[$p['id']]=$p['name']." ".$p['city'];
-		endforeach;
-		unset ($party);
-		$data['party']=$party1;
-		$data['det']=$det;
-		$data['trantype']=$trantype;
-		//$data['party']=$party1;
-		print_r($det);
-		echo "<br>";
-		$this->load->view('templates/header');
-		$this->load->view('summary/edit_summary',$data);    
-		$this->load->view('templates/footer');
-		echo "Can edit <a href=".site_url('home').">Go Home</a>";
-	endif;
-	
-	}		
-			
-	
-	public function edit_summary()
-	//validation rules:
-	{
 	$this->form_validation->set_rules('tran_type_id', 'Tran Type ID', 'required');
 	$this->form_validation->set_rules('party_id', 'Party ID', 'required');
 	$this->form_validation->set_rules('date', 'Date', 'required');
 	if ($this->form_validation->run()==false):
-	echo "Invalid<br>";
-	print_r($_POST);
+		$id=$this->uri->segment(3);
+		$trantype=$this->Summary_model->getdescr($id);
+		$descr=$trantype->descrip_1;
+		$date=$trantype->date;
+		echo $date."<br>";
+		echo $descr."<br>";
+		if (ucfirst($descr)=="Cash" and $date!=date("Y-m-d")):
+			echo "Cannot edit earlier cash transactions <a href=".site_url('home').">Go Home</a>";
+		else:
+			$party=$this->Party_model->getall();
+			foreach ($party as $p):
+				$party1[$p['id']]=$p['name']." ".$p['city'];
+			endforeach;
+			unset ($party);
+			$data['party']=$party1;
+			$data['trantype']=$trantype;
+			echo "<br>";
+			$this->load->view('templates/header');
+			$this->load->view('summary/edit_summary',$data);    
+			$this->load->view('templates/footer');
+			echo "Can edit <a href=".site_url('home').">Go Home</a>";
+		endif;
 	else:
-	echo "Valid<br>";
-	echo "not posted";
+		echo "valid";
+		unset($_POST['submit']);
+		print_r($_POST);
+		$data=$_POST;
+		$data['date']=date('Y-m-d',strtotime($data['date']));
+		$this->Summary_model->update($data);
+		echo "Data updated<br><a href=".site_url('home').">Go Home</a>";
+		
 	endif;
-}		
-			
-			
+	}		
 			
 	public function delete($id=null)
 	{

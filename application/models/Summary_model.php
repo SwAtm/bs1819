@@ -70,7 +70,16 @@ class Summary_model extends CI_Model{
 		return $trtype;
 	}
 	
-	
+	public function update($data)
+	//called by My_Summary/edit
+	{
+	extract ($data);
+	$this->db->where('id',$id);
+	$this->db->update('summary',array('party_id'=>$party_id, 'expenses'=>$expenses,'remark'=>$remark,'date'=>$date));
+
+	return true;	
+		
+	}
 
 
 }
