@@ -81,6 +81,16 @@ class Summary_model extends CI_Model{
 		
 	}
 
+	public function cancel($id)
+	//called by My_summary/delete
+	{
+	
+	$this->db->where('id',$id);
+	$this->db->update('summary',array('expenses'=>0,'remark'=>"Cancelled",'date'=>date('Y-m-d')));
+	return true;
+	
+	
+	}
 
 }
 ?>

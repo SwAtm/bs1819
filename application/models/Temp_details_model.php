@@ -13,7 +13,7 @@ class Temp_details_model extends CI_Model{
 	}
 
 	public function getall()
-	//called by my_summary/add, temp_details/index
+	//called by my_summary/add, temp_details/index, my_summary/editdet
 	{
 	
 	$sql=$this->db->select('*');
@@ -28,7 +28,7 @@ class Temp_details_model extends CI_Model{
 	}
 	
 	public function adddata($data)
-	//called by temp_details/add
+	//called by temp_details/add, my_summary/editdet
 	{
 		if ($this->db->insert('temp_details',$data)):
 		return true;

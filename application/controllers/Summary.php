@@ -39,8 +39,8 @@ class Summary extends CI_Controller{
 				->set_theme('datatables')
 				->unset_delete()
 				->add_action('Edit Summary',base_url('application/pencil.png'), 'My_Summary/edit')
-				->add_action('Delete Summary',base_url('application/delete.jpeg'), 'My_Summary/delete');
-
+				->add_action('Delete Summary',base_url('application/delete.jpeg'), 'My_Summary/delete')
+				->add_action('Edit Details',base_url('application/pencil.png'),'My_Summary/editdet');
 				$operation=$crud->getState();
 				if($operation == 'edit' || $operation == 'update' || $operation == 'update_validation'):
 				$crud->field_type('tran_type_id','readonly')

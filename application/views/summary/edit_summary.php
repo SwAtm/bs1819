@@ -19,10 +19,7 @@ $(document).ready(function() {
 echo validation_errors();
 echo "<table border=1 align=center width=50%)";
 echo "<tr><td colspan=2 align=center>Edit Transaction</td></tr>";
-echo "!!<br>";
-print_r($trantype);
-echo "!!<br>";
-$hidden=array ('id'=>$trantype->id,'tran_type_id'=>$trantype->tran_type_id,'tr_code'=>$trantype->tr_code,'tr_no'=>$trantype->tr_no);
+$hidden=array ('id'=>$trantype->id,'tran_type_id'=>$trantype->tran_type_id,'tr_code'=>$trantype->tr_code,'tr_no'=>$trantype->tr_no, 'date'=>date('d-m-Y',strtotime($trantype->date)), 'party_id'=>$trantype->party_id);
 echo form_open('My_Summary/edit/'.$hidden['id'],'',$hidden);
 echo "<tr><td>Transaction Type</td><td>".$trantype->descrip_1." ".$trantype->descrip_2." ".$trantype->location." ".$trantype->tr_code." ".$trantype->tr_no."</td></tr>";
 if (strtoupper($trantype->descrip_1)=="CASH"):

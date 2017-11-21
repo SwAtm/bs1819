@@ -67,7 +67,7 @@ class My_Summary extends CI_Controller{
 		unset ($_POST['submit']);
 		$tid=$_POST['tran_type_id'];
 		$trcode=$this->Tran_type_model->gettrcode($tid);
-		print_r($trcode);
+		//print_r($trcode);
 		$_POST['tr_code']=$trcode->tr_code;
 		$trno=$this->Summary_model->gettranno($_POST['tr_code']);
 		$_POST['tr_no']=$trno;
@@ -82,26 +82,26 @@ class My_Summary extends CI_Controller{
 		if ((strtoupper($descr)=="CASH")||(strtoupper($descr)=="BANK")):
 		$_POST['party_id']=1048;
 		endif;
-		print_r($_POST);
-		echo "Post<br>";
+		//print_r($_POST);
+		//echo "Post<br>";
 		if ($this->Summary_model->adddata($_POST)):
 			$summary_id=$this->Summary_model->getmaxid();
 			$details=$this->Temp_details_model->getall();
-			print_r($details);
-			echo "Details<br>";
-			print $summary_id;
-			echo "summary_id<br>";
+			//print_r($details);
+			//echo "Details<br>";
+			//print $summary_id;
+			//echo "summary_id<br>";
 			foreach ($details as $row):
-				print_r($row);
-				echo "row<br>";
+				//print_r($row);
+				//echo "row<br>";
 				foreach ($row as $k=>$v):
 				$det[$k]=$v;
 				$det['summary_id']=$summary_id;
 				endforeach;
 				unset ($det['id']);
 				$this->Details_model->adddata($det);
-				print_r($det);
-				echo "det<br>";
+				//print_r($det);
+				//echo "det<br>";
 			endforeach;
 			$this->Temp_details_model->delete();
 			echo "Record added.<a href=".site_url('home').">Go Home</a>";
@@ -126,10 +126,10 @@ class My_Summary extends CI_Controller{
 		$trantype=$this->Summary_model->getdescr($id);
 		$descr=$trantype->descrip_1;
 		$date=$trantype->date;
-		echo $date."<br>";
-		echo $descr."<br>";
-		if (ucfirst($descr)=="Cash" and $date!=date("Y-m-d")):
-			echo "Cannot edit earlier cash transactions <a href=".site_url('home').">Go Home</a>";
+		if ($trantype->remark=='Cancelled'):
+				echo "Bill is already cancelled <a href=".site_url('Summary/summary').">Go to list</a>";
+		elseif (ucfirst($descr)=="Cash" and $date!=date("Y-m-d")):
+			echo "Cannot edit earlier cash transactions <a href=".site_url('Summary/summary').">Go to list</a>";
 		else:
 			$party=$this->Party_model->getall();
 			foreach ($party as $p):
@@ -138,21 +138,16 @@ class My_Summary extends CI_Controller{
 			unset ($party);
 			$data['party']=$party1;
 			$data['trantype']=$trantype;
-			echo "<br>";
 			$this->load->view('templates/header');
 			$this->load->view('summary/edit_summary',$data);    
 			$this->load->view('templates/footer');
-			echo "Can edit <a href=".site_url('home').">Go Home</a>";
 		endif;
 	else:
-		echo "valid";
 		unset($_POST['submit']);
-		print_r($_POST);
 		$data=$_POST;
 		$data['date']=date('Y-m-d',strtotime($data['date']));
 		$this->Summary_model->update($data);
-		echo "Data updated<br><a href=".site_url('home').">Go Home</a>";
-		
+		echo "Data updated<br><a href=".site_url('Summary/summary').">Go to list</a>";
 	endif;
 	}		
 			
@@ -160,22 +155,43 @@ class My_Summary extends CI_Controller{
 	{
 			
 	$id=$this->uri->segment(3);
-	$det=$this->Summary_model->getdetails($id);
-	$date=$det->date;
 	$trantype=$this->Summary_model->getdescr($id);
 	$descr=$trantype->descrip_1;
+	$date=$trantype->date;
 	
-	echo $date."<br>";
-	echo $descr."<br>";
-	if (ucfirst($descr)=="Cash" and $date!=date("Y-m-d")):
-		echo "Cannot delete earlier cash transactions <a href=".site_url('home').">Go Home</a>";
+	if ($trantype->remark=='Cancelled'):
+				echo "Bill is already cancelled <a href=".site_url('Summary/summary').">Go to list</a>";
+	elseif (ucfirst($descr)=="Cash" and $date!=date("Y-m-d")):
+		echo "Cannot delete earlier cash transactions <a href=".site_url('Summary/summary').">Go to list</a>";
 	else:
-		echo "Can delete <a href=".site_url('home').">Go Home</a>";
+		//print_r($trantype);
+		if ($this->Details_model->deletedet($id) and $this->Summary_model->cancel($id)):
+			
+				echo "Deleted <a href=".site_url('Summary/summary').">Go to list</a>";
+		else:
+				echo "Could not delete	<a href=".('Summary/summary').">Go to list</a>";
+	
+		endif;
+	
 	endif;
 	
 		}	
 			
-		
+	public function editdet($id)
+	{
+	if($this->Temp_details_model->getall()):
+		echo "You have incomplete bill. Pl complete it and come back. <a href=".site_url('Summary/summary').">Go to list</a>";
+	else:
+		$id=$this->uri->segment(3);
+		$det=$this->Details_model->getdetails($id);
+		foreach ($det as $row):
+			$this->Temp_details_model->adddata($row);
+		endforeach;
+		redirect ('Temp_details/index');
+	endif;
+
+	
+	}	
 
 
 
