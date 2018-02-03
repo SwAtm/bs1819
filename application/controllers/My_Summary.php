@@ -26,12 +26,12 @@ class My_Summary extends CI_Controller{
 	$this->form_validation->set_rules('tran_type_id', 'Tran Type ID', 'required');
 	$this->form_validation->set_rules('party_id', 'Party ID', 'required');
 	$this->form_validation->set_rules('date', 'Date', 'required');
-	//new or failed
+	
 	if (isset($_POST['cancel'])):
 		$this->Temp_details_model->delete();
 		redirect ('home','refresh');
 	endif;	
-	
+	//new or failed
 	if ($this->form_validation->run()==false):
 		if(!$this->Temp_details_model->getall()):
 		$this->load->view('templates/header');
@@ -176,24 +176,17 @@ class My_Summary extends CI_Controller{
 	endif;
 	
 		}	
-			
-	public function editdet($id)
-	{
-	if($this->Temp_details_model->getall()):
-		echo "You have incomplete bill. Pl complete it and come back. <a href=".site_url('Summary/summary').">Go to list</a>";
-	else:
+		public function printbill($id)
+		{
 		$id=$this->uri->segment(3);
-		$det=$this->Details_model->getdetails($id);
-		foreach ($det as $row):
-			$this->Temp_details_model->adddata($row);
-		endforeach;
-		redirect ('Temp_details/index');
-	endif;
-
-	
-	}	
-
-
-
-
+		$toprint1=$this->Summary_model->toprint1($id);
+		$toprint2=$this->Summary_model->toprint2($id);
+		$toprint3=$this->Summary_model->getdescr($id);
+		
+		$data['toprint1']=$toprint1;
+		$data['toprint2']=$toprint2;
+		$data['toprint3']=$toprint3;
+		$this->load->view('summary/printbill',$data);
+		}
+			
 }

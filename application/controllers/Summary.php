@@ -24,13 +24,16 @@ class Summary extends CI_Controller{
 			$crud = new grocery_CRUD();
 			$crud->set_table('summary')
 				->set_subject('Summary')
-				->columns('tran_type_id','tr_code','tr_no','date', 'party_id', 'expenses', 'remark')
+				->order_by('id','desc')
+				//->columns('tran_type_id','tr_code','tr_no','date', 'party_id', 'expenses', 'remark')
+				->columns('tran_type_id','tr_code','tr_no','date', 'party_id', 'amount', 'remark')
 				->display_as('tran_type_id','Transaction Type')
 				->display_as('tr_code','Transaction Code')
 				->display_as('tr_no','Transaction Number')
 				->display_as('date','Date')
 				->display_as('party_id','Party')
-				->display_as('expenses','Exenses')
+				//->display_as('expenses','Exenses')
+				->display_as('amount','Amount')
 				->display_as('remark','Remark')
 				->fields('tran_type_id','tr_code','tr_no','date','party_id','expenses','remark')
 				->unset_add()
@@ -39,8 +42,10 @@ class Summary extends CI_Controller{
 				->set_theme('datatables')
 				->unset_delete()
 				->add_action('Edit Summary',base_url('application/pencil.png'), 'My_Summary/edit')
-				->add_action('Delete Summary',base_url('application/delete.jpeg'), 'My_Summary/delete')
-				->add_action('Edit Details',base_url('application/pencil.png'),'My_Summary/editdet');
+				//->add_action('Delete Summary',base_url('application/delete.jpeg'), 'My_Summary/delete')
+				->add_action('Edit Details',base_url('application/pencil.png'),'Details/index')
+				->add_action('Print',base_url('application/print.png'),'My_Summary/printbill')
+				->add_action('Show Details',base_url('application/print.png'),'Details/show');
 				$operation=$crud->getState();
 				if($operation == 'edit' || $operation == 'update' || $operation == 'update_validation'):
 				$crud->field_type('tran_type_id','readonly')
@@ -52,6 +57,8 @@ class Summary extends CI_Controller{
 		
 			$crud->set_relation('tran_type_id','tran_type','{location}--{descrip_1}---{descrip_2}');
 			$crud->set_relation('party_id','party','{name}--{city}');
+			$crud->callback_column('amount',array($this,'_callback_amount'));
+			$crud->callback_column('date',array($this,'_callback_date'));
 			$output = $crud->render();
 			$this->_example_output($output);                
 
@@ -77,6 +84,27 @@ class Summary extends CI_Controller{
 	endif;
 		}
 */			
+		
+		public function _callback_amount($id, $row)
+		{
+		$sql=$this->db->select('SUM(quantity*(rate-cashdisc)-((quantity*(rate-cashdisc)))*discount/100) AS amount',false);
+		$sql=$this->db->from ('details');
+		$sql=$this->db->join('item', 'item.id=details.item_id');
+		$sql=$this->db->where('details.summary_id',$row->id);
+		//$sql=$this->db->group_by('details.summary_id');
+		$res=$this->db->get();
+		$amount=$res->row()->amount;
+		$amount=$amount+$row->expenses;
+		return number_format($amount,2,'.','');
+		}
+		
+		
+		public function _callback_date($id, $row)
+		{
+		return date('d/m/Y', strtotime($id));
+		}
+		
+		
 		function _example_output($output = null)
 	{
 		$this->load->view('templates/header');

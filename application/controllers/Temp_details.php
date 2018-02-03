@@ -35,12 +35,11 @@ class Temp_details extends CI_Controller{
 		endforeach;
 	
 		$data['list']=$list;
-	
 		$data['header']=array('Bk_title','quantity','discount','cashdis');		
 		//print_r($data);
 		$this->load->view('templates/header');
 		$this->load->view('temp_details/list_all',$data);
-		$this->load->view('templates/footer');
+		//$this->load->view('templates/footer');
 	endif;
 	}
 	
@@ -71,7 +70,7 @@ class Temp_details extends CI_Controller{
 		
 			$this->load->view('templates/header');
 			$this->load->view('temp_details/add',$data);
-			$this->load->view('templates/footer');
+			//$this->load->view('templates/footer');
 		elseif ($_POST['save']):
 			unset ($_POST['save']);
 			//print_r($_POST);
@@ -92,7 +91,7 @@ class Temp_details extends CI_Controller{
 		if (!$id=$this->uri->segment(3)):
 		$id=$_POST['id'];
 		endif;
-		//print $id;
+		print $id;
 		$this->form_validation->set_rules('item_id', 'Item', 'required');
 		$this->form_validation->set_rules('quantity', 'Quantity', 'required');
 		//$this->form_validation->set_rules('discount', 'Discount', 'required');
