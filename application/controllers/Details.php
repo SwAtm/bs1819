@@ -109,7 +109,7 @@ class Details extends CI_Controller{
 			$data['defa']=$row->item_id;
 			$this->load->view('templates/header');
 			$this->load->view('details/edit',$data);
-			$this->load->view('templates/footer');
+			//$this->load->view('templates/footer');
 		elseif ($_POST['save']):
 			unset ($_POST['save']);
 			if ($this->Temp_details_model->update($_POST)):

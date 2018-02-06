@@ -58,7 +58,7 @@ class My_Summary extends CI_Controller{
 		$data['party']=$party1;
 		$this->load->view('templates/header');
 		$this->load->view('summary/add',$data);    
-		$this->load->view('templates/footer');
+		//$this->load->view('templates/footer');
 	else:
 	//valid
 		

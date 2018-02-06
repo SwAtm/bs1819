@@ -1,6 +1,6 @@
 <?php
 echo validation_errors();
-print_r($item);
+//print_r($item);
 echo "<table border=1 align=center width=50%)";
 echo "<tr><td colspan=2 align=center>Complete Transaction</td></tr>";
 echo form_open('Temp_details/add');

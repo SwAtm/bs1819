@@ -11,7 +11,7 @@ echo "<tr><td>Select Item</td><td>".form_dropdown('item_id',$item, $defa)."</td>
 echo "<tr><td>Quantity</td><td>".form_input('quantity',$quantity)."</td></tr>";
 echo "<tr><td>Discount</td><td>".form_input('discount',$discount)."</td></tr>";
 echo "<tr><td>Cash Discount</td><td>".form_input('cashdisc',$cashdisc)."</td></tr>";
-echo "<tr><td align=center>".form_submit('save','Save')."</td><td align=center>".form_submit('golist','Go to List')."</tr>";
+echo "<tr><td align=center>".form_submit('save','Save and Go to List')."</td><td align=center>".form_submit('golist','Go to List Without Saving')."</tr>";
 echo "</td></tr></table>";
 echo form_close();
 ?>
