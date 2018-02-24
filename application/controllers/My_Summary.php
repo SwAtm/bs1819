@@ -17,7 +17,7 @@ class My_Summary extends CI_Controller{
 		$this->load->model('Details_model');
 		$this->load->model('temp_bill_model');
 		$this->output->enable_profiler(TRUE);
-		$this->load->library('pdf');
+		//$this->load->library('pdf');
 }
 
 	
@@ -233,21 +233,9 @@ class My_Summary extends CI_Controller{
 		$data['toprint3']=$toprint3;
 		$data['temp_bill']=$res;
 		
-		//mpdf
-		//require_once(APPPATH.'libraries/MPDF57/mpdf.php');
-		//$mpdf=NEW mPDF();
-		$pdf = $this->pdf->load();
-		$file_name="bill.pdf";
-		$html=$this->load->view('summary/printbill.php',$data, true);
-		print_r($html);
-		$pdf->WriteHTML($html);
-		$pdf->Output($file_name, "I");
 
-		
-		
-		
-		//$this->load->view('templates/header');
-		//$this->load->view('summary/printbill',$data);
+		$this->load->view('templates/header');
+		$this->load->view('summary/printbill',$data);
 		}
 				
 			
