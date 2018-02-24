@@ -141,6 +141,7 @@ class Details extends CI_Controller{
 		//$this->form_validation->set_rules('cashdisc', 'Cash Discount', 'required');
 		if ($this->form_validation->run()==false):
 			$det=$this->Item_model->getall();
+			$item['_dummy']="Select Item";
 			foreach ($det as $k):
 				$item[$k['id']]=$k['title']."--".$k['rate'];
 			endforeach;
@@ -155,12 +156,14 @@ class Details extends CI_Controller{
 		elseif ($_POST['save']):
 			unset ($_POST['save']);
 			//print_r($_POST);
-			if ($this->Temp_details_model->adddata($_POST)):
+			if ($_POST['item_id']=="_dummy"):
+				unset ($_POST['item_id']);
+			else:
+			$this->Temp_details_model->adddata($_POST);
+			endif;
 				$list=$this->Temp_details_model->getall();
 				$this->listall($list);
-			else:
-				echo "Could not add <a href=home>Go Home</a>";
-			endif;
+			
 		endif;
 	
 	}

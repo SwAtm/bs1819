@@ -26,7 +26,7 @@ class Summary extends CI_Controller{
 				->set_subject('Summary')
 				->order_by('id','desc')
 				//->columns('tran_type_id','tr_code','tr_no','date', 'party_id', 'expenses', 'remark')
-				->columns('tran_type_id','tr_code','tr_no','date', 'party_id', 'amount', 'remark')
+				->columns('id','tran_type_id','tr_code','tr_no','date', 'party_id', 'amount', 'remark')
 				->display_as('tran_type_id','Transaction Type')
 				->display_as('tr_code','Transaction Code')
 				->display_as('tr_no','Transaction Number')

@@ -15,7 +15,9 @@ class My_Summary extends CI_Controller{
 		$this->load->model('Summary_model');
 		$this->load->model('Temp_details_model');
 		$this->load->model('Details_model');
+		$this->load->model('temp_bill_model');
 		$this->output->enable_profiler(TRUE);
+		$this->load->library('pdf');
 }
 
 	
@@ -181,12 +183,72 @@ class My_Summary extends CI_Controller{
 		$id=$this->uri->segment(3);
 		$toprint1=$this->Summary_model->toprint1($id);
 		$toprint2=$this->Summary_model->toprint2($id);
-		$toprint3=$this->Summary_model->getdescr($id);
 		
+		//replace grate with 0 if purchase or purchase return and party is unregd
+		if (($toprint1->descrip_2=="Purchase" OR $toprint1->descrip_2=="Purchase Return") AND $toprint1->status!=="REGD"):
+		foreach ($toprint2 as $k=>$p):
+			$toprint2[$k]['grate']=0;
+		endforeach;
+		endif;
+		
+		
+		
+		//work out transaction value and gst
+		//if tax rate is 0, tr_value should be 0
+		foreach ($toprint2 as $k=>$p):
+			$val=($p['rate']-$p['cashdisc'])*$p['quantity']-(($p['rate']-$p['cashdisc'])*$p['quantity']*($p['discount']/100));
+			if (0==$toprint2[$k]['grate']):
+			$toprint2[$k]['tr_val']=0;
+			$toprint2[$k]['gst']=0;
+			else:
+			$toprint2[$k]['tr_val']=round($val/(100+$p['grate'])*100,2);
+			$toprint2[$k]['gst']=round($val/(100+$p['grate'])*$p['grate'],2);
+			endif;
+			$toprint2[$k]['val']=$val;
+		endforeach;
+		
+		//workout total books amount and articles amount
+		$toprint3['amountb']=0;
+		$toprint3['amountr']=0;
+		
+		foreach ($toprint2 as $k=>$p):
+			if ($p['cat_id']==1):
+				$toprint3['amountb']=$toprint3['amountb']+(($p['grate']==0)?$p['val']:$p['tr_val']);
+			else:
+				$toprint3['amountr']=$toprint3['amountr']+(($p['grate']==0)?$p['val']:$p['tr_val']);
+			endif;
+		endforeach;
+				
+		//work out summary. Insert into a table.
+		$temp_bill=array();
+		foreach ($toprint2 as $row=>$v):
+				$temp_bill[]=array("grate"=>$v['grate'], "tr_val"=>$v['tr_val'], "val"=>$v['val'], "gst"=>$v['gst']);
+		endforeach;
+		//print_r($temp_bill);
+		$res=$this->temp_bill_model->adddata($temp_bill);
+			
+			//print_r($res);
 		$data['toprint1']=$toprint1;
 		$data['toprint2']=$toprint2;
 		$data['toprint3']=$toprint3;
-		$this->load->view('summary/printbill',$data);
+		$data['temp_bill']=$res;
+		
+		//mpdf
+		//require_once(APPPATH.'libraries/MPDF57/mpdf.php');
+		//$mpdf=NEW mPDF();
+		$pdf = $this->pdf->load();
+		$file_name="bill.pdf";
+		$html=$this->load->view('summary/printbill.php',$data, true);
+		print_r($html);
+		$pdf->WriteHTML($html);
+		$pdf->Output($file_name, "I");
+
+		
+		
+		
+		//$this->load->view('templates/header');
+		//$this->load->view('summary/printbill',$data);
 		}
+				
 			
 }

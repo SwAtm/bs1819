@@ -93,9 +93,10 @@ class Summary_model extends CI_Model{
 	public function toprint1($id)
 	//called by My_summary/printbill
 	{
-	$sql=$this->db->select('a.tr_code, a.tr_no, a.date, a.party_id, a.expenses, a.remark, b.code, b.name, b.add1, b.add2, b.city, b.gstno');
+	$sql=$this->db->select('a.tr_code, a.tr_no, a.date, a.party_id, a.expenses, a.remark, b.code, b.name, b.add1, b.add2, b.city, b.gstno, b.status, t.location, t.descrip_1, t.descrip_2');
 	$sql=$this->db->from ('summary as a');
 	$sql=$this->db->join ('party as b', 'a.party_id=b.id');
+	$sql=$this->db->join ('tran_type as t', 't.tr_code=a.tr_code');
 	$sql=$this->db->where('a.id',$id);
 	$res=$this->db->get();
 	$toprint1=$res->row();
@@ -110,7 +111,7 @@ class Summary_model extends CI_Model{
 	$sql=$this->db->join ('item as b', 'a.item_id=b.id');
 	$sql=$this->db->where('a.summary_id',$id);
 	$res=$this->db->get();
-	$toprint2=$res->result();
+	$toprint2=$res->result_array();
 	return $toprint2;
 }
 	
