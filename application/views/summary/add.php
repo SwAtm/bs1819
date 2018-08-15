@@ -21,7 +21,7 @@ echo "<table border=1 align=center width=50%)";
 echo "<tr><td colspan=2 align=center>Complete Transaction. Cash transactions will always be for today</td></tr>";
 echo form_open('My_Summary/add');
 echo "<tr><td>Select Transaction Type</td><td>".form_dropdown('tran_type_id',$transact,'5')."</td></tr>";
-echo "<tr><td>Date</td><td>".form_input(array('name'=>'date','id'=>'dt'))."</td></tr>";
+//echo "<tr><td>Date</td><td>".form_input(array('name'=>'date','id'=>'dt'))."</td></tr>";
 echo "<tr><td>Select Party</td><td>".form_dropdown('party_id',$party,'1048')."</td></tr>";
 echo "<tr><td>Expenses</td><td>".form_input('expenses')."</td></tr>";
 echo "<tr><td>Remark</td><td>".form_input(array('name'=>'remark','maxlength'=>30,'size'=>30))."</td></tr>";

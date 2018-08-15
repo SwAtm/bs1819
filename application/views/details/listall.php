@@ -1,6 +1,7 @@
 <?php
+//print_r($trantype);
 echo "<table border=1 align=center width=50%)";
-echo "<tr><td colspan=4 align=center>Entered Bill</td></tr>";
+echo "<tr><td colspan=4 align=center>Entered Bill  ".$trantype->tr_code." - ".$trantype->tr_no."</td></tr>";
 echo "<tr>";
 foreach ($header as $k):
 echo "<td>$k</td>";

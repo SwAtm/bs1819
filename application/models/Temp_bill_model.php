@@ -1,4 +1,5 @@
 <?php
+//this seems unnecessary. May be, it was used and then discarded.
 class temp_bill_model extends CI_Model{
 	public function __construct()
 		{		

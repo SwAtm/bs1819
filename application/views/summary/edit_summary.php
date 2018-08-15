@@ -32,6 +32,7 @@ echo "<tr><td colspan=2 align=center>Party: Walk In Customre</td></tr>";
 else:
 echo "<tr><td>Select Party</td><td>".form_dropdown('party_id',$party,set_value('party_id',$trantype->party_id ))."</td></tr>";
 endif;
+//echo "<tr><td colspan=2 align=center>Party: ". $party."</td></tr>";
 echo "<tr><td>Expenses</td><td>".form_input(array('name'=>'expenses', 'value'=>set_value('expenses',$trantype->expenses)))."</td></tr>";
 echo "<tr><td>Remark</td><td>".form_input(array('name'=>'remark','maxlength'=>30,'size'=>30, 'value'=>set_value('remark',$trantype->remark)))."</td></tr>";
 echo "<tr><td colspan=2 align=center>".form_submit('submit','Submit')."</td></tr>";

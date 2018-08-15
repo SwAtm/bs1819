@@ -135,7 +135,7 @@ $(function(){
 		$('.upload-success-url').hide();
 		$('.fileinput-button').fadeIn("normal");
 		/* -------------------- */
-
+		
 		$('.remove-all').each(function(){
 			$(this).trigger('click');
 		});
@@ -143,4 +143,21 @@ $(function(){
 		$('.chosen-multiple-select, .chosen-select, .ajax-chosen-select').each(function(){
 			$(this).trigger("liszt:updated");
 		});
+		
+		// jquery chosen select and multiple select
+		$('.chosen-select, .chosen-multiple-select').each(function() {
+		$(this).val('').trigger('chosen:updated');
+});
+		
+		/*$('.remove-all').each(function(){
+			$(this).trigger('click');
+		});
+		
+		$('.chosen-multiple-select').each(function(){
+			$(this).trigger("liszt:updated");
+		});
+		
+		$('.chosen-select').each(function(){
+			$(this).trigger("liszt:updated");
+		}); */
 	}

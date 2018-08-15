@@ -31,8 +31,8 @@ class Details extends CI_Controller{
 		$date=$trantype->date;
 		if ($trantype->remark=='Cancelled'):
 				echo "Bill is already cancelled <a href=".site_url('Summary/summary').">Go to list</a>";
-		elseif (ucfirst($descr)=="Cash" and $date!=date("Y-m-d")):
-			echo "Cannot edit earlier cash transactions <a href=".site_url('Summary/summary').">Go to list</a>";
+		elseif ((ucfirst($descr)=="Cash" and $date!=date("Y-m-d")) OR (ucfirst($descr)!=="Cash" and Date("m",strtotime($date))!=Date("m"))):
+			echo "Beyond Date scope. Cash - only today, Others - Only curent month <a href=".site_url('Summary/summary').">Go to list</a>";
 		else:
 			$det=$this->Details_model->getdetails($id);
 			foreach ($det as $row):
@@ -52,8 +52,9 @@ class Details extends CI_Controller{
 	
 	public function listall($list)
 		{
-		print_r($list);
-		echo count($list);
+		//print_r($list);
+		//echo count($list);
+		$sid=$this->session->userdata('sid');
 		if (!empty($list)):
 			foreach ($list as $k=>$v):
 			//unset ($list[$k]['id']);
@@ -63,7 +64,8 @@ class Details extends CI_Controller{
 			$list[$k]['item_id']=$row->title."-".$row->rate;
 			//unset ($list[$k]['item_id']);
 			endforeach;
-	
+			$trantype=$this->Summary_model->getdescr($sid);
+			$data['trantype']=$trantype;
 			$data['list']=$list;
 			$data['header']=array('Bk_title','quantity','discount','cashdis');		
 			//print_r($data);
@@ -71,7 +73,7 @@ class Details extends CI_Controller{
 			$this->load->view('details/listall',$data);
 			//$this->load->view('templates/footer');
 		else:
-			$sid=$this->session->userdata('sid');
+			
 			if ($this->Details_model->deletedet($sid) and $this->Summary_model->cancel($sid)):
 			
 				echo "No details, Bill Deleted <a href=".site_url('Summary/summary').">Go to list</a>";

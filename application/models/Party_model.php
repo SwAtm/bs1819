@@ -16,5 +16,19 @@ public function getall()
 	$sql=$this->db->get();
 	return $sql->result_array();
 	}
+
+	public function getdetails($id)
+	{
+	$sql=$this->db->select('*');
+	$sql=$this->db->from ('party');
+	$sql=$this->db->where ('id', $id);
+	$sql=$this->db->get();
+	$res=$sql->row();
+	return $res;
+	}	
+
+
+
+
 }
 ?>

@@ -25,9 +25,11 @@ class Party extends CI_Controller{
 			->display_as('i_e','Branch')
 			->display_as('st','State')
 			->display_as('gstno','GST No')
+			->display_as('status', 'Status')
 			->unique_fields(array('code'))
 			->field_type('i_e','dropdown',array('I'=>'Inter Branch', 'E'=>'External'))
 			->field_type('st','dropdown',array('I'=>'Inside State','O'=>'Outside State'))
+			->field_type('status', 'dropdown', array('REGD'=>'Registered', 'UNRD'=>'Un Registered', 'COMP'=>'Composition Dealer'))
 			->set_lang_string('delete_error_message', 'This data cannot be deleted, because there are still a constrain data, please delete that constrain data first.');
 			$crud->callback_before_delete(array($this,'delete_check'));
 			
@@ -35,7 +37,7 @@ class Party extends CI_Controller{
 			
 			$operation=$crud->getState();
 			if( $operation == 'add' || $operation == 'insert' || $operation == 'insert_validation'):
-				$crud->required_fields('name','code', 'city', 'i_e', 'st');
+				$crud->required_fields('name','code', 'city', 'i_e', 'st', 'status');
 				$crud->callback_before_insert(array($this,'toupper'));
 				//$crud->set_rules('code', 'Party Code', 'trim|required|is_unique[party.code]');
 			elseif($operation == 'edit' || $operation == 'update' || $operation == 'update_validation'):
@@ -47,8 +49,9 @@ class Party extends CI_Controller{
 					$crud->field_type('code', 'readonly');
 					$crud->field_type('name', 'readonly');
 					$crud->field_type('st', 'readonly');
+					$crud->field_type('status', 'readonly');
 				else:
-					$crud->required_fields('name', 'code', 'city', 'i_e', 'st');
+					$crud->required_fields('name', 'code', 'city', 'i_e', 'st', 'status');
 					$crud->callback_before_update(array($this,'toupper'));
 					//$crud->set_rules('code', 'Party Code', 'trim|required|is_unique[party.code]');
 				endif;

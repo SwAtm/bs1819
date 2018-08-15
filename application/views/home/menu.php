@@ -19,18 +19,23 @@
             <li><a href="<?php echo site_url('summary/summary')?>">Edit Transaction</a></li>
         </ul>
     </li>
-    <li><a href="#">Item 3</a>
+    <li><a href="#">Reports</a>
         <ul class="sub">
-            <li><a href="#">Sub Item 3.1</a></li>
-            <li><a href="#">Sub Item 3.2</a></li>
-            <li><a href="#">Sub Item 3.3</a></li>
-            <li><a href="#">Sub Item 3.4</a></li>
-            <li><a href="#">Sub Item 3.5</a></li>
-        </ul>
+            <li><a href="<?php echo site_url('My_Summary/reports')?>">Non GST Reports</a></li>
+            <li><a href="<?php echo site_url('My_Summary/gstreports')?>">GST Reports</a></li>
+
+            
+       </ul>
     </li>
-    <li><a href="#">Item 4</a></li>
-    <li><a href="#">Item 5</a>
-        <ul class="sub">
+    <li><a href="<?php echo site_url('Trnf_Summary/summary')?>">Stock Transfer</a></li>
+   
+	<li><a href="#">Proforma</a>
+		<ul class="sub">
+			<li><a href="<?php echo site_url('Profo_Summary/summary')?>">Add Proforma</a></li>
+            <li><a href="<?php echo site_url('Profo_Summary/balance')?>">View Balance/Print</a></li>
+	
+		</ul>
+       <!-- <ul class="sub">
             <li><a href="#">Sub Item 5.1</a></li>
             <li><a href="#">Sub Item 5.2</a>
                 <ul class="sub">
@@ -54,7 +59,7 @@
                 </ul>
             </li>
         </ul>
-    </li>
+    </li>-->
     <li><a href="#">Item 6</a></li>
 </ul>
 </body>
