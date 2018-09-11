@@ -67,6 +67,10 @@ class Trnf_Summary extends CI_Controller{
         $return .= "(dd/mm/yyyy)";
         return $return;
 	}
+	
+	function get_stock($id){
+		return $id;
+	}
 
 }
 ?>
