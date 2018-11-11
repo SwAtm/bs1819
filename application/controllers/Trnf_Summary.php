@@ -30,6 +30,7 @@ class Trnf_Summary extends CI_Controller{
 				->set_rules('to_id', 'Location To', 'callback_check_location')
 				->add_action('View Details',base_url('application/view_details.png'), 'Trnf_Details/id_details')
 				->add_action('Add Details',base_url('application/add_details.png'), 'Trnf_Details/details/add')
+				->add_action('Print',base_url('application/print.png'),'Trnf_Details/idprint')
 				->set_relation('from_id','locations','{description}')
 				->set_relation('to_id','locations','{description}')
 				->order_by('id','desc');

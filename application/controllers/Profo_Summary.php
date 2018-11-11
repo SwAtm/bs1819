@@ -27,16 +27,18 @@ class Profo_Summary extends CI_Controller{
 				->display_as('o_i', 'Type')
 				->set_relation('party_id','party','{name}-{add1}-{city}')
 				->unset_delete()
-				->unset_edit()
+				//->unset_edit()
+				->unset_edit_fields('o_i')
 				->set_rules('date', 'Date', 'required')
 				->set_rules('party_id', 'Party', 'required')
 				->set_rules('party_id', 'Party', 'callback_check_o_i')
 				->set_rules('o_i', 'Proforma Type', 'required')
 				->callback_add_field('date',array($this,'_add_default_date_value'))
 				->field_type('o_i','dropdown',array('out'=>'Out','in'=>'In'))
-				->add_action('Add Details',base_url('application/add_details.png'), 'Profo_Details/details/add')
 				->add_action('View Details',base_url('application/view_details.png'), 'Profo_Details/id_details')
-				->set_theme('datatables')
+				->add_action('Add Details',base_url('application/add_details.png'), 'Profo_Details/details/add')
+				->add_action('Print',base_url('application/print.png'),'Profo_Details/idprint')
+				//->set_theme('datatables')
 				->order_by('id','desc');
 				//$crud->callback_before_update(array($this,'check_o_i'));
 		$output = $crud->render();

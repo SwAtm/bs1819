@@ -113,6 +113,7 @@ class Profo_Details extends CI_Controller{
 		
 		$this->_example_output($output); 
 		}
+
 	function _example_output($output = null)
 	{
 		$this->load->view('templates/header');
@@ -190,7 +191,6 @@ class Profo_Details extends CI_Controller{
 			if ($balance[$k]['bal']==0):
 				unset ($balance[$k]);
 			endif;
-			//$tbal=$tbal+($balance[$k]['bal']*$balance[$k]['rate']);
 		endforeach;
 		$count=count($balance);
 		if (count($balance)==0):
@@ -201,32 +201,12 @@ class Profo_Details extends CI_Controller{
 			endforeach;
 		endif;
 	$company = $this->Company_model->getall();
-	/*
-	echo "<pre>";
-	print_r($balance);
-	print_r($party);
-	echo "</pre>";
-	*/
 	$data['party']=$party;
 	$data['balance']=$balance;
 	$data['company']=$company;
 	$data['tbalance']=$tbal;
-	/*$folder=SAVEPATH;
-	$filename="Profo_Balance".$party['name'];
-	$this->html2pdf->folder($folder);
-	if ($count<3):
-		$this->html2pdf->filename($filename."_a5.pdf");
-		$this->html2pdf->paper('a5', 'landscape');
-	else:
-		$this->html2pdf->filename($filename."_a4.pdf");
-		$this->html2pdf->paper('a4', 'portrait');
-	endif;
-	$this->html2pdf->html($this->load->view('profo_details/balance', $data, true));
-	$spath=$this->html2pdf->create('save');
-	echo "File saved at as ".$spath."<br>";*/
 	$this->load->view('templates/header');	
 	$this->load->view('profo_details/balance', $data);
-	
 	endif;
 	}
 

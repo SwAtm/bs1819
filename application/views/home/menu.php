@@ -60,6 +60,7 @@
             </li>
         </ul>
     </li>-->
+    <li><a href="<?php echo site_url('Po_Summary/summary')?>">Purchase Order</a></li>
     <li><a href="#">Item 6</a></li>
 </ul>
 </body>
