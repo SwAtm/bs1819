@@ -9,16 +9,188 @@ class Details extends CI_Controller{
 		$this->load->library('form_validation');
 		$this->load->library('table');
 		//$this->load->helper('security');
-		//$this->load->library('grocery_CRUD');
+		$this->load->library('grocery_CRUD');
 		$this->load->model('Tran_type_model');
 		$this->load->model('Party_model');
 		$this->load->model('Summary_model');
 		$this->load->model('Temp_details_model');
 		$this->load->model('Details_model');
 		$this->load->model('Item_model');
+		$this->load->model('Company_model');
+		$this->load->library('html2pdf');
 		$this->output->enable_profiler(TRUE);
 }
 
+	public function details($id)
+	{
+		//used to add details
+			$id=$this->uri->segment(4);
+			$crud = new grocery_CRUD();
+			$crud->set_table('details')
+				->set_subject('Detail')
+				->display_as('item_id','Item')
+				->display_as('quantity','Quantiti')
+				->display_as('discount','Discount %')
+				->display_as('cashdisc','Discount Cash')
+				->unset_back_to_list()
+				->set_relation('item_id','item','{title}--{rate}')
+				->set_rules('quantity', 'Quantity', 'required|numeric')
+				->set_rules('item_id', 'Item', 'required')
+				->fields('summary_id', 'item_id','quantity', 'discount', 'cashdisc' )
+				->field_type('summary_id','hidden', $id)
+				->order_by('id','desc');		
+			$output = $crud->render();
+			$output->extra="<table align=center bgcolor=lightblue width=100%><tr><td align=center><a href = ".site_url('Summary/summary').">Go to Transaction List ".$id."</a> </td></tr></table>";
+			$this->_example_output($output);   
+		}
+	
+	function id_details($id=null)
+	{
+		//to edit details
+		$crud = new grocery_CRUD();
+		$id=$this->uri->segment(3);
+	
+	
+		$crud->set_table('details')
+				->set_subject('Detail')
+				->columns('item_id','quantity', 'discount', 'cashdisc')
+				->display_as('id','ID')
+				->display_as('summary_id','Bill No')
+				->display_as('item_id','Item')
+				->display_as('quantity','Quantity')
+				->display_as('discount','% Discount')
+				->display_as('cashdisc','Cash Discount')
+				->set_relation('item_id','item','{title}--{rate}')
+				->set_relation('summary_id','summary','{tr_code}--{tr_no}')
+				->set_rules('quantity', 'Quantity', 'numeric')
+				->unset_print()
+				->unset_add()
+				->field_type('summary_id','readonly')
+				->where('summary_id',$id)
+				->order_by('id','desc');		
+				$output = $crud->render();
+				$output->extra="<table align=center bgcolor=lightblue width=100%><tr><td align=center><a href = ".site_url('Summary/summary').">Go to Transaction List</a> </td></tr></table>";
+				$this->_example_output($output); 
+		}
+
+	function _example_output($output = null)
+	{
+		$this->load->view('templates/header');
+		$this->load->view('trans_template.php',$output);    
+		$this->load->view('templates/footer');
+	}    
+
+	public function printbill($id)
+		{
+		$id=$this->uri->segment(3);
+		print_r($id);
+		$trantype=$this->Summary_model->getdescr($id);
+
+		//What is allowed to be printed
+		if ($trantype->remark=='Cancelled'):
+				Die("Bill is already cancelled <a href=".site_url('Summary/summary').">Go to list</a>");
+		endif;
+		
+		//Allowed to be printed
+		$toprint1=$this->Summary_model->toprint1($id);
+		$toprint2=$this->Summary_model->toprint2($id);
+		
+		//replace grate with 0 if purchase or purchase return and party is unregd
+		if (($toprint1->descrip_2=="Purchase" OR $toprint1->descrip_2=="Purchase Return") AND $toprint1->p_status!=="REGD"):
+		foreach ($toprint2 as $k=>$p):
+			$toprint2[$k]['grate']=0;
+		endforeach;
+		endif;
+		
+		//work out transaction value and gst
+		
+		foreach ($toprint2 as $k=>$p):
+			$val=($p['rate']-$p['cashdisc'])*$p['quantity']-(($p['rate']-$p['cashdisc'])*$p['quantity']*($p['discount']/100));
+			if ($toprint1->st=='I'):
+				$toprint2[$k]['cgrate']=$toprint2[$k]['sgrate']=$p['grate']/2;
+				$toprint2[$k]['igrate']=0;
+				$toprint2[$k]['cgst']=$toprint2[$k]['sgst']=round($val/(100+$p['grate'])*$p['grate']/2,2);
+				$toprint2[$k]['igst']=0;
+			else:
+				$toprint2[$k]['cgrate']=$toprint2[$k]['sgrate']=0;
+				$toprint2[$k]['igrate']=$p['grate'];
+				$toprint2[$k]['igst']=round($val/(100+$p['grate'])*$p['grate'],2);
+				$toprint2[$k]['cgst']=0;
+				$toprint2[$k]['sgst']=0;
+			endif;
+			$toprint2[$k]['tr_val']=round($val-$toprint2[$k]['cgst']-$toprint2[$k]['sgst']-$toprint2[$k]['igst'],2);
+			$toprint2[$k]['val']=$val;
+			
+		endforeach;
+		
+		
+		
+		//totals
+		$cgst_total=array_sum(array_column($toprint2,'cgst'));
+		$sgst_total=array_sum(array_column($toprint2,'sgst'));
+		$igst_total=array_sum(array_column($toprint2,'igst'));
+		$tr_val_total=array_sum(array_column($toprint2,'tr_val'));
+		$val_total=array_sum(array_column($toprint2,'val'));
+		$amountb=$amountr=0;
+		foreach ($toprint2 as $k=>$p):
+			if ($p['cat_id']==1):
+				$amountb+=$p['tr_val'];
+				
+			else:
+				$amountr+=$p['tr_val'];
+			endif;
+		endforeach;
+		
+		//workout grand total
+		$gt=0;
+		foreach ($toprint2 as $some):
+			$gt+=$some['val'];
+		endforeach;
+		$gt=$gt+$toprint1->expenses;
+		
+		
+		//put everything in data
+		$data['toprint1']=$toprint1;
+		$data['toprint2']=$toprint2;
+		$data['gt']=$gt;
+		$data['sgst_total']=$sgst_total;
+		$data['cgst_total']=$cgst_total;
+		$data['igst_total']=$igst_total;
+		$data['amountb']=$amountb;
+		$data['amountr']=$amountr;
+		$data['tr_val_total']=$tr_val_total;
+		$data['val_total']=$val_total;
+		$count=count($toprint2);	
+		//get the company info
+		$company = $this->Company_model->getall();
+		$data['company']=$company;
+		
+		//pdf
+		$folder=SAVEPATH;
+		$filename=$toprint1->tr_code."-".$toprint1->tr_no;
+		$this->html2pdf->folder($folder);
+		echo $folder;
+		if ($count<3):
+			$this->html2pdf->filename($filename."_a5.pdf");
+			$this->html2pdf->paper('a5', 'landscape');
+		else:
+			$this->html2pdf->filename($filename."_a4.pdf");
+			$this->html2pdf->paper('a4', 'portrait');
+		endif;
+		//$this->load->view('templates/header');
+		$this->html2pdf->html($this->load->view('details/printbill', $data, true));
+		$spath=$this->html2pdf->create('save');
+		//$this->load->view('summary/printbill',$data);
+		echo "File saved at as ".$spath;
+		//$data['filename']=$filename;
+		//$data['folder']=$folder;
+		//echo $folder;
+		$data['spath']=$spath;
+		$this->load->view('details/printbill_1',$data);
+		}
+
+
+/*
 		public function index($id)
 	{
 	if($this->Temp_details_model->getall()):
@@ -49,7 +221,9 @@ class Details extends CI_Controller{
 
 	}
 	
+	*/
 	
+	/*
 	public function listall($list)
 		{
 		//print_r($list);
@@ -85,6 +259,8 @@ class Details extends CI_Controller{
 		endif;
 		}
 
+	*/
+	/*
 	public function edit($id=null)
 	{
 	$id=$this->uri->segment(3);
@@ -125,7 +301,9 @@ class Details extends CI_Controller{
 	
 	}
 	
+	*/
 	
+	/*
 	public function delete($id=null)
 		{
 		$id=$this->uri->segment(3);
@@ -134,7 +312,9 @@ class Details extends CI_Controller{
 		$this->listall($list);
 		}
 	
-	public function add()
+	*/
+	
+/*	public function add()
 	{
 	//set validation rules
 		$this->form_validation->set_rules('item_id', 'Item', 'required');
@@ -168,8 +348,10 @@ class Details extends CI_Controller{
 			
 		endif;
 	
-	}
+	}*/
 	
+	
+	/*
 	public function complete()
 	{
 		$sid=$this->session->userdata('sid');
@@ -195,6 +377,9 @@ class Details extends CI_Controller{
 		$this->Temp_details_model->delete();
 		echo "Record added.<a href=".site_url('Summary/summary').">Go to List</a><br>";
 	}
+	
+	*/
+	
 /*	public function detlist()
 	{
 	$list=$this->Temp_details_model->getall();
@@ -229,6 +414,7 @@ class Details extends CI_Controller{
 	}
 
 */
+/*	
 	public function show($id=null)
 	{
 	$id=$this->uri->segment(3);
@@ -238,11 +424,55 @@ class Details extends CI_Controller{
 	$this->load->view('details/show',$data);
 	//$this->load->view('templates/footer');
 	}
+*/
 
 
+/*
+		function details1($id){	
+		$crud = new grocery_CRUD();
+		$crud->set_table('details')
+				->set_subject('whatever')
+				->columns('summary_id', 'item_id','quantity', 'discount', 'cashdisc' )
+				->display_as('summary_id','Bill No')
+				->display_as('item_id','Item')
+				->display_as('quantity','Quantiti')
+				->display_as('discount','Discount %')
+				->display_as('cashdisc','Discount Cash')
+				->unset_back_to_list()
+				->set_relation('summary_id','summary','{tr_code}--{tr_no}')
+				->set_relation('item_id','item','{title}--{rate}')
+				->set_rules('quantity', 'Quantity', 'required|numeric')
+				->set_rules('item_id', 'Item', 'required')
+				//->unset_add();
+				//->edit_fields('summ_id','item_id','quantity')
+				//->add_fields('item_id','quantity')
+				->fields('summary_id', 'item_id','quantity', 'discount', 'cashdisc' );
+				$crud->field_type('summary_id','hidden', $id);
+				
+		$crud->order_by('id','desc');		
+		$output = $crud->render();
+		$output->extra="<table align=center bgcolor=lightblue width=100%><tr><td align=center><a href = ".site_url('Summary/summary').">Go to Transaction List</a> </td></tr></table>";
+		/*echo "<pre>";
+		print_r($output);
+		echo "</pre>";*/
+		
+		//$this->_example_output($output);   
+		
+		/*	
+			$det=$this->Details_model->getdetails($id);
+			foreach ($det as $row):
+				$this->Temp_details_model->adddata($row);
+			endforeach;
+		//set session summary_id
+		$this->session->set_userdata('sid',$id);
+		
+			$list=$this->Temp_details_model->getall();
+		$this->listall($list);
+		endif;
+			
+	
 
-
-
+	}*/
 
 
 }

@@ -18,7 +18,7 @@ class Tran_type_model extends CI_Model{
 
 
 	public function gettrcode($tid)
-	//called by my_summary/add
+	//called by my_summary/get_trcode_etc
 	{
 	$sql=$this->db->select('tr_code, descrip_1');
 	$sql=$this->db->from('tran_type');

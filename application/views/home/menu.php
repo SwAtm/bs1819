@@ -10,15 +10,11 @@
 <ul id="menu-v">
     <li><a href="<?php echo site_url('party/party')?>">Add/Edit Party</a></li>
     <li><a href="<?php echo site_url('item/item')?>">Add/Edit Item</a></li>
+    <li><a href="<?php echo site_url('summary/summary')?>">Add/Edit Transaction</a></li>
+
     
     
     
-    <li><a href="#">Transactions</a>
-        <ul class="sub">
-            <li><a href="<?php echo site_url('temp_details/add')?>">Add Transaction</a></li>
-            <li><a href="<?php echo site_url('summary/summary')?>">Edit Transaction</a></li>
-        </ul>
-    </li>
     <li><a href="#">Reports</a>
         <ul class="sub">
             <li><a href="<?php echo site_url('My_Summary/reports')?>">Non GST Reports</a></li>

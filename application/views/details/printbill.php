@@ -30,7 +30,7 @@ echo "<tr><td>".$p['code']."</td><td>".$p['hsn']."</td><td width=20%>".substr($p
 endforeach;
 echo "<tr><td colspan=7>Total : </td><td>".number_format($tr_val_total,2)."<td></td><td>".number_format($sgst_total,2)."</td><td></td><td>".number_format($cgst_total,2)."</td><td ></td><td>".number_format($igst_total,2)."</td><td>".number_format($val_total,2)."</td></tr>";
 echo "<tr><td colspan=3>Value of Books: ".number_format($amountb,2)."</td><td colspan=4>Value of Articles: ".number_format($amountr,2)."</td><td colspan=4>Expenses: ".$toprint1->expenses."</td><td colspan=4>Gr Total: ".number_format($gt,2)."</td></tr>";
-echo "<tr><td colspan=6 align=center><a href=".site_url('Summary/summary').">GO to List</a></td><td colspan=9 align=center><a href=".site_url('temp_details/add').">Continue with new bill</a></td></tr>";
+echo "<tr><td colspan=15 align=center><a href=".site_url('Summary/summary').">GO to List</a></td></tr>";
 echo "</table>";
 /*
 echo "</table>";

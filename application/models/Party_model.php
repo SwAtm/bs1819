@@ -18,6 +18,7 @@ public function getall()
 	}
 
 	public function getdetails($id)
+	//called by Summary/get_trcode_etc
 	{
 	$sql=$this->db->select('*');
 	$sql=$this->db->from ('party');

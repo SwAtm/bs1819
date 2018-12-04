@@ -7,7 +7,7 @@ class Summary_model extends CI_Model{
 	
 
 	public function gettranno($tcode)
-	//called by my_summary/add
+	//called by my_summary/get_trcode_etc
 		{
 		$query=$this->db->select_max('tr_no');
 		$query=$this->db->from('summary');
@@ -59,7 +59,7 @@ class Summary_model extends CI_Model{
 	}
 	
 	public function getdescr($id)
-	//called by my_summary/edit, Details/show
+	//called by my_summary/edit, Details/show, Summary/check_editable, Details/printbill
 	{
 		$sql=$this->db->select('*');
 		$sql=$this->db->from('tran_type');
@@ -91,7 +91,7 @@ class Summary_model extends CI_Model{
 	}
 	
 	public function toprint1($id)
-	//called by My_summary/printbill
+	//called by Details/printbill
 	{
 	$sql=$this->db->select('s.tr_code, s.tr_no, s.date, s.expenses, s.remark, s.p_status, p.name, p.city, p.st, p.gstno, t.location, t.descrip_1, t.descrip_2');
 	$sql=$this->db->from ('summary as s');
@@ -104,7 +104,7 @@ class Summary_model extends CI_Model{
 	}
 	
 	public function toprint2($id)
-	//called by My_summary/printbill
+	//called by Details/printbill
 	{
 	$sql=$this->db->select('d.quantity, d.discount, d.cashdisc, i.cat_id, i.code, i.rate, i.title, i.hsn, i.grate');
 	$sql=$this->db->from ('details as d');

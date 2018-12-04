@@ -5,7 +5,9 @@ class Company_model extends CI_Model{
 		$this->load->database();
 	}
 
-	public function getall(){
+	public function getall()
+	//Details/printbill
+	{
 		$sql=$this->db->select('*');
 		$sql=$this->db->from('company');
 		$sql=$this->db->get();

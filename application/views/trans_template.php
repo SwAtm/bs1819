@@ -30,14 +30,15 @@ a:hover
 </style>
 </head>
 <body>
-	<div>
-	<?php echo $extra?>
-	</div>
+	
     <div style='height:20px;'></div>  
     <div>
 <?php echo $output; ?>
  
     </div>
+    <div>
+	<?php echo $extra?>
+	</div>
 
 </body>
 </html>
