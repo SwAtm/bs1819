@@ -6,19 +6,8 @@ class Tran_type_model extends CI_Model{
 	}
 
 
-	public function getall()
-	//called by my_sumamry/add
-	
-	{
-	$sql=$this->db->select('*');
-	$sql=$this->db->from ('tran_type');
-	$sql=$this->db->get();
-	return $sql->result_array();
-	}
-
-
 	public function gettrcode($tid)
-	//called by my_summary/get_trcode_etc
+	//called by my_summary/get_trcode_etc, *Summary/get_trcode_etc
 	{
 	$sql=$this->db->select('tr_code, descrip_1');
 	$sql=$this->db->from('tran_type');
@@ -29,6 +18,18 @@ class Tran_type_model extends CI_Model{
 	
 	}
 
+
+	//not reqd
+	/*
+	public function getall()
+	//called by my_sumamry/add
+	{
+	$sql=$this->db->select('*');
+	$sql=$this->db->from ('tran_type');
+	$sql=$this->db->get();
+	return $sql->result_array();
+	}
+	*/
 
 
 

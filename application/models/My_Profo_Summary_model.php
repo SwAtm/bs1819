@@ -8,7 +8,7 @@ class My_Profo_Summary_model extends Grocery_crud_model{
 	
 	
 	public function profo_summary($id){
-	//called by profo_details/details, idprint, check_qty, id_balance
+	//called by profo_details/*details, *idprint, *check_qty, *id_balance
 	$sql=$this->db->select('proforma_summary.id, proforma_summary.o_i, date, party.id as pid, party.name, party.add1, party.city' );
 	$sql=$this->db->from('proforma_summary');
 	$sql=$this->db->join('party', 'party.id=proforma_summary.party_id');
@@ -21,7 +21,7 @@ class My_Profo_Summary_model extends Grocery_crud_model{
 	
 	
 	public function get_ids_party($pid){
-		//called by profo_details/convert
+		//called by *profo_details/convert
 	$sql=$this->db->select('id');
 	$sql=$this->db->from('proforma_summary');
 	$sql=$this->db->where('party_id',$pid);
@@ -31,7 +31,7 @@ class My_Profo_Summary_model extends Grocery_crud_model{
 	}
 	
 	public function delet_party($pid){
-		//called by profo_details/convert
+		//called by *profo_details/convert
 	$sql=$this->db->where('party_id',$pid);
 	$sql=$this->db->delete('proforma_summary');
 	}

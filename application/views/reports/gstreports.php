@@ -26,7 +26,7 @@ $(document).ready(function() {
 <?php
 echo validation_errors();
 echo "<table width=75% align=center border=1><tr><td colspan=3 align=center>Generate GST Report</td></tr>";
-echo form_open('My_Summary/gstreports');
+echo form_open('Reports/gstreports');
 
 echo "<tr><td>Date</td><td>Starting".form_input(array('name'=>'sdate','id'=>'dt'))."</td><td>Endig".form_input(array('name'=>'edate','id'=>'dt1'));
 echo "</tr><tr><td colspan=3 align=center>".form_submit('submit','Submit')."</td></tr>";

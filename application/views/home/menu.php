@@ -17,8 +17,8 @@
     
     <li><a href="#">Reports</a>
         <ul class="sub">
-            <li><a href="<?php echo site_url('My_Summary/reports')?>">Non GST Reports</a></li>
-            <li><a href="<?php echo site_url('My_Summary/gstreports')?>">GST Reports</a></li>
+            <li><a href="<?php echo site_url('Reports/reports')?>">Non GST Reports</a></li>
+            <li><a href="<?php echo site_url('Reports/gstreports')?>">GST Reports</a></li>
 
             
        </ul>

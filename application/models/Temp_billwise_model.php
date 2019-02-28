@@ -6,7 +6,7 @@ class temp_billwise_model extends CI_Model{
 	}
 
 	public function adddata($data)
-//called by My_summary/reports
+//called by *Reports/reports
 		{
 		if ($this->db->insert_batch('temp_billwise',$data)):
 		$sql=$this->db->select ('tr_code, tr_no, date, code, name, city, expenses, sum(amount_b) as amount_b, sum(amount_r) as amount_r, sum(igst) as igst, sum(cgst) as cgst, sum(sgst) as sgst, sum(total)+expenses as total');

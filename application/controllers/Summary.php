@@ -13,7 +13,7 @@ class Summary extends CI_Controller{
 		$this->load->model('Tran_type_model');
 		$this->load->model('Party_model');
 		$this->load->model('Summary_model');
-		$this->load->model('Temp_details_model');
+		//$this->load->model('Temp_details_model');
 		$this->output->enable_profiler(TRUE);
 		$this->load->library('user_agent');
 
@@ -27,10 +27,10 @@ class Summary extends CI_Controller{
 			$crud->set_table('summary')
 				->set_subject('Transaction')
 				->order_by('id','desc')
-				->columns('id','tran_type_id','tr_code','tr_no','date', 'party_id', 'amount', 'remark')
+				->columns('tran_type_id','tr_code','tr_no','date', 'party_id', 'amount', 'remark')
 				->display_as('tran_type_id','Transaction Type')
-				->display_as('tr_code','Transaction Code')
-				->display_as('tr_no','Transaction Number')
+				->display_as('tr_code','Trn Code')
+				->display_as('tr_no','Trn Number')
 				->display_as('date','Date')
 				->display_as('party_id','Party')
 				->display_as('amount','Amount')
@@ -49,7 +49,7 @@ class Summary extends CI_Controller{
 				->field_type('p_status','invisible')
 				->field_type('date','invisible')
 				->callback_before_insert(array($this,'get_trcode_etc'))
-				->add_action('Edit Summary',base_url('application/edit_summary.png'),'', '', array($this,'check_editable'))
+				->add_action('Edit Summary',base_url('application/pencil.png'),'', '', array($this,'check_editable'))
 				->add_action('Add Details',base_url('application/add_details.png'),'', '', array($this,'check_addable'))
 				->add_action('Edit Details',base_url('application/edit_details.png'),'', '', array($this,'check_det_editable'))
 				->add_action('Print',base_url('application/print.png'),'Details/printbill');

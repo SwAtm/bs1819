@@ -13,7 +13,7 @@ class Details extends CI_Controller{
 		$this->load->model('Tran_type_model');
 		$this->load->model('Party_model');
 		$this->load->model('Summary_model');
-		$this->load->model('Temp_details_model');
+		//$this->load->model('Temp_details_model');
 		$this->load->model('Details_model');
 		$this->load->model('Item_model');
 		$this->load->model('Company_model');

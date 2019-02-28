@@ -18,6 +18,8 @@
         }
      
         public function set_custom_query($query_str) {
+            //*Profo_Summary/balance
+            
             $this->query_str = $query_str;
         }
      

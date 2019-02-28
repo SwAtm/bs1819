@@ -6,7 +6,7 @@ class Item_model extends CI_Model{
 	}
 	
 	public function get_title($id)
-	//called by temp_details/index, Po_Detals/details_add
+	//called by temp_details/index, *Po_Detals/details_add, *Item/get_stock, *Item/det_stck
 	{
 	$query=$this->db->select('*');
 	$query=$this->db->from ('item');
@@ -18,25 +18,13 @@ class Item_model extends CI_Model{
 	//else:
 	//return '';
 	//endif;
+	}
 	
 	
-	}
-	public function getall()
-	//called by temp_details/add
-	{
-	$sql=$this->db->select('*');
-	$sql=$this->db->from('item');
-	$sql=$this->db->get();
-	if ($sql && $sql->num_rows()>0):
-	return $sql->result_array();
-	else:
-	return false;
-	endif;
-	}
 	
 	
 	public function stck_summ($id){
-	//called by Item/get_stock,Po_details/details
+	//called by *Item/get_stock, *Po_details/details
 	$sql=$this->db->query("select l.id, l.description, op.opstck, dt.sales, dt.purchase, trn.qout, trn.qin
 	from
 	locations as l
@@ -86,7 +74,7 @@ class Item_model extends CI_Model{
 return $res;
 }
 	public function get_by_party($pid){
-		//called by po_details/details
+		//called by *po_details/details
 	$sql=$this->db->select('*');
 	$sql=$this->db->from('item');
 	$sql=$this->db->where('party_id',$pid);
@@ -99,7 +87,21 @@ return $res;
 	}
 		
 	
-	
+	//not reqd
+	/*
+	public function getall()
+	//called by temp_details/add
+	{
+	$sql=$this->db->select('*');
+	$sql=$this->db->from('item');
+	$sql=$this->db->get();
+	if ($sql && $sql->num_rows()>0):
+	return $sql->result_array();
+	else:
+	return false;
+	endif;
+	}
+	*/
 	
 
 

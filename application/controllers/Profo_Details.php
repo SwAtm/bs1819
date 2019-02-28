@@ -18,7 +18,7 @@ class Profo_Details extends CI_Controller{
 		$this->load->model('My_Profo_Details_model');
 		$this->load->model('Company_model');
 		$this->load->model('Item_model');
-		$this->load->model('Temp_details_model');
+		//$this->load->model('Temp_details_model');
 		
 		$this->load->library('html2pdf');
 	}
@@ -254,13 +254,7 @@ class Profo_Details extends CI_Controller{
 		redirect (site_url('Temp_details/index'));
 				
 	endif;
-	
-	
-	
-	
-	
-	
-	}
+}
 
 
 }

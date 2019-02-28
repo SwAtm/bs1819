@@ -5,6 +5,32 @@ class Details_model extends CI_Model{
 		$this->load->database();
 	}
 
+	public function get_trans($id, $lid){
+	//called by *Item/det_stock
+	$sql=$this->db->query("select summary.tr_code, summary.tr_no, summary.date, party.code, party.name, party.city,  
+	case when tran_type.descrip_2='Purchase' or tran_type.descrip_2= 'Sale Return' then quantity else quantity*-1 end as quantity  
+	from details 
+	join summary on details.summary_id=summary.id 
+	join party on summary.party_id=party.id
+	join tran_type on summary.tran_type_id=tran_type.id 
+	join locations on tran_type.location=locations.description 
+	where details.item_id='$id' and locations.id=$lid");
+	//if ($sql and $sql->num_rows()>0):
+	$trans=$sql->result_array();
+	//else:
+	//$sql=$this->db->query('select locations.id, locations.description, 0 as sales, 0 as purchase from locations');
+	//$trans=$sql->result_array();
+	//endif;
+	return $trans;
+	
+	
+	}
+	
+	
+	
+	
+	//these are not reqd
+	/*
 	public function adddata($details)
 	{
 	
@@ -47,26 +73,6 @@ class Details_model extends CI_Model{
 	$res=$sql->result_array();
 	return $res;
 	}
-	
-	public function get_trans($id, $lid){
-	//called by Item/det_stock
-	$sql=$this->db->query("select summary.tr_code, summary.tr_no, summary.date, party.code, party.name, party.city,  
-	case when tran_type.descrip_2='Purchase' or tran_type.descrip_2= 'Sale Return' then quantity else quantity*-1 end as quantity  
-	from details 
-	join summary on details.summary_id=summary.id 
-	join party on summary.party_id=party.id
-	join tran_type on summary.tran_type_id=tran_type.id 
-	join locations on tran_type.location=locations.description 
-	where details.item_id='$id' and locations.id=$lid");
-	//if ($sql and $sql->num_rows()>0):
-	$trans=$sql->result_array();
-	//else:
-	//$sql=$this->db->query('select locations.id, locations.description, 0 as sales, 0 as purchase from locations');
-	//$trans=$sql->result_array();
-	//endif;
-	return $trans;
-	
-	
-	}
+	*/
 }
 ?>
