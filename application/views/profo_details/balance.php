@@ -12,13 +12,13 @@ echo "<tr><td>".$bal['item_id']."</td><td>".$bal['title']."</td><td>".number_for
 endforeach;
 echo "<tr><td colspan=7 align=center>Total: ".number_format($tbalance,2)."</td></tr>";
 echo "</table>";
-echo "<table width=100% border=1><tr><td>";
-echo "<a href = ".site_url('Profo_Summary/balance').">Go to Proforma Summary Balance list</a></td></tr>";
+echo "<table width=100% border=1>";
 echo form_open('Profo_Details/convert');
-echo "<tr><td> Convert to Sales Invoice and settle for amount:".form_input('settleamt',number_format($tbalance,2)).form_submit('submit','Convert')."</td></tr></table>";
+echo "<tr><td align=center>Convert to Sales Invoice and settle for amount:".form_input('settleamt',number_format($tbalance,2)).form_dropdown('tr_type',$trdd).form_submit('submit','Convert')."</td></tr>";
 echo form_hidden($balance);
 echo form_hidden('pid',$party['pid']);
 echo form_hidden('tbalance', $tbalance);
 echo form_close();
+echo "<tr><td align=center><a href = ".site_url('Profo_Summary/balance').">Go to Proforma Summary Balance list</a></td></tr></table>";
 ?>
 </html>

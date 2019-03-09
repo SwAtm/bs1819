@@ -16,6 +16,7 @@ class Summary extends CI_Controller{
 		//$this->load->model('Temp_details_model');
 		$this->output->enable_profiler(TRUE);
 		$this->load->library('user_agent');
+		$this->load->model('Company_model');
 
 }
 
@@ -24,6 +25,8 @@ class Summary extends CI_Controller{
 		public function summary()
 	{
 			$crud = new grocery_CRUD();
+			
+			
 			$crud->set_table('summary')
 				->set_subject('Transaction')
 				->order_by('id','desc')
@@ -35,6 +38,7 @@ class Summary extends CI_Controller{
 				->display_as('party_id','Party')
 				->display_as('amount','Amount')
 				->display_as('remark','Remark')
+				->set_rules('date','Date','callback_chkdt')
 				->unset_delete()
 				->unset_edit()
 				->unset_print()
@@ -200,7 +204,23 @@ class Summary extends CI_Controller{
 		endif;
 		}
 		
+		public function chkdt($dt)
+		{
+		$dt=date('Y-m-d');
+		$sdt=strtotime($dt);
+		$cmp=$this->Company_model->getall();
+		$frdate=$cmp->from_date;
+		$todate=$cmp->to_date;
+		$frdate=strtotime($frdate);
+		$todate=strtotime($todate);
+		if ($sdt<=$todate and $sdt>=$frdate):
+		return true;
+		else:
+		$this->form_validation->set_message('chkdt','Date must be in the current year between '.date('d/m/Y',$frdate).' and '.date('d/m/Y',$todate).'. Instead your date is '.date('d/m/Y',$sdt));
+		return false;
+		endif;
 		
+		}	
 
 	/*	public function checkedit($id)
 		{

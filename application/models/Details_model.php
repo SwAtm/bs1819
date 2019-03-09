@@ -25,18 +25,18 @@ class Details_model extends CI_Model{
 	
 	
 	}
-	
+	public function adddata($details)
+	//called by *Profo_Details/convert
+	{
+	$this->db->insert('details',$details);
+		return true;
+	}
 	
 	
 	
 	//these are not reqd
 	/*
-	public function adddata($details)
-	{
 	
-	$this->db->insert('details',$details);
-		return true;
-	}
 
 	public function getdetails($id)
 	//called by My_Summary/editdet

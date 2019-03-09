@@ -26,6 +26,7 @@ class Po_Summary extends CI_Controller{
 				->display_as('remarks','Remark')
 				->set_rules('date', 'Date', 'required')
 				->set_rules('party_id', 'Party', 'required')
+				->set_rules('party_id', 'Party', 'callback_check_item_table')
 				->fields('date','party_id','remarks')
 				//->set_theme('datatables')
 				->unset_delete()
@@ -34,7 +35,9 @@ class Po_Summary extends CI_Controller{
 				->add_action('View Details',base_url('application/view_details.png'), 'Po_Details/id_details')
 				->add_action('Add Details',base_url('application/add_details.png'), 'Po_Details/details')
 				->add_action('Print',base_url('application/print.png'),'Po_Details/idprint')
+				->order_by('id','desc')
 				->set_relation('party_id','party','{name}--{city}');
+				//->set_relation_n_n('party_id','item','party','party_id','party_id','name');
 				$output = $crud->render();
 				$this->_example_output($output);                
 
@@ -55,6 +58,21 @@ class Po_Summary extends CI_Controller{
         $return .= "(dd/mm/yyyy)";
         return $return;
 	}		
+	
+	
+	function check_item_table($pid){
+	//fail validation if the party is not a supplier
+	$res=$this->db->query('select * from item where party_id='.$pid);
+	$numrows=count($res->result_array());
+	
+	if ($numrows>0):
+	return true;
+	else:
+	$this->form_validation->set_message('check_item_table', 'Not a supplier');
+	return false;
+	endif;
+	}
+	
 	
 }	
 ?>

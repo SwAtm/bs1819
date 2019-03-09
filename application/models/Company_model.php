@@ -6,7 +6,7 @@ class Company_model extends CI_Model{
 	}
 
 	public function getall()
-	//*Details/printbill, *Profo_Details/idprint, *Profo_Details/id_balance, *Trnf_Details/idprint
+	//*Details/printbill, *Profo_Details/idprint, *Profo_Details/id_balance, *Trnf_Details/idprint, *Summary/summary
 	{
 		$sql=$this->db->select('*');
 		$sql=$this->db->from('company');

@@ -7,7 +7,7 @@ class Party_model extends CI_Model{
 
 
 	public function getdetails($id)
-	//called by *Summary/get_trcode_etc
+	//called by *Summary/get_trcode_etc, *Profo_Details/convert
 	{
 	$sql=$this->db->select('*');
 	$sql=$this->db->from ('party');

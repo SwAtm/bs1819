@@ -7,7 +7,7 @@ class Summary_model extends CI_Model{
 	
 
 	public function gettranno($tcode)
-	//called by my_summary/get_trcode_etc, *Summary/get_trcode_etc
+	//called by my_summary/get_trcode_etc, *Summary/get_trcode_etc, *Profo_Details/convert
 		{
 		$query=$this->db->select_max('tr_no');
 		$query=$this->db->from('summary');
@@ -97,6 +97,27 @@ class Summary_model extends CI_Model{
 
 	}
 	
+	public function adddata($data)
+	//called by *Profo_Details/convert
+	{
+
+	if ($this->db->insert('summary',$data)):
+		return true;
+	else:
+		return false;
+	endif;
+	
+	}
+	
+	
+	public function getmaxid()
+	//called by *Profo_Details/convert
+	{
+	$res=$this->db->query('select max(id) as id from summary');
+	$summary_id=$res->row_array();
+	return $summary_id['id'];
+	}
+	
 	/*public function repo_bill($reports):
 	{
 	foreach ($reposts as $k=>$v):
@@ -110,17 +131,7 @@ class Summary_model extends CI_Model{
 
 //not reqd
 /*
-public function adddata($data)
-	//called by my_summary/add
-	{
 
-	if ($this->db->insert('summary',$data)):
-		return true;
-	else:
-		return false;
-	endif;
-	
-	}
 	
 	public function getmaxid()
 	//called by my_summary/add

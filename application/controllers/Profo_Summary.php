@@ -51,7 +51,7 @@ class Profo_Summary extends CI_Controller{
 	$crud = new grocery_CRUD();
 		$crud->set_table('proforma_summary');
 				$crud->set_model('Custom_query_model');
-				$crud->basic_model->set_custom_query('select party_id, id from proforma_summary group by party_id');
+				$crud->basic_model->set_custom_query('select party_id, id from proforma_summary group by party_id order by id desc');
 				$crud->columns('party_id');
 				$crud->display_as('party_id', 'Party')
 				->unset_read()
