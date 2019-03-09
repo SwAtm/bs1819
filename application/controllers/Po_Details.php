@@ -104,7 +104,7 @@ class Po_Details extends CI_Controller{
 			if ($this->Po_Details_model->adddata($po_det)):
 				echo "All well <a href=".site_url('home').">Go Home</a>";
 			else:
-				Die ("Failed to Add data to Po_Details Tabe");
+				Die ("Failed to Add data to Po_Details Tabel");
 			endif;
 		
 		else:

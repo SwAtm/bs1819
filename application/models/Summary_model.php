@@ -7,7 +7,7 @@ class Summary_model extends CI_Model{
 	
 
 	public function gettranno($tcode)
-	//called by my_summary/add
+	//called by my_summary/get_trcode_etc, *Summary/get_trcode_etc, *Profo_Details/convert
 		{
 		$query=$this->db->select_max('tr_no');
 		$query=$this->db->from('summary');
@@ -23,8 +23,82 @@ class Summary_model extends CI_Model{
 		return $tr_no;
 	}
 
+	
+	
+	public function getdescr($id)
+	//called by my_summary/edit, Details/show, *Summary/check_editable, *Details/printbill, *Summary/check_addable, *Summary/check_det_editable
+	{
+		$sql=$this->db->select('*');
+		$sql=$this->db->from('tran_type');
+		$sql=$this->db->join('summary', 'summary.tr_code=tran_type.tr_code');
+		$sql=$this->db->where('summary.id',$id);
+		$res=$this->db->get();
+		$trtype=$res->row();
+		return $trtype;
+	}
+	
+	
+	
+	public function toprint1($id)
+	//called by *Details/printbill
+	{
+	$sql=$this->db->select('s.tr_code, s.tr_no, s.date, s.expenses, s.remark, s.p_status, p.name, p.city, p.st, p.gstno, t.location, t.descrip_1, t.descrip_2');
+	$sql=$this->db->from ('summary as s');
+	$sql=$this->db->join ('party as p', 's.party_id=p.id');
+	$sql=$this->db->join ('tran_type as t', 't.tr_code=s.tr_code');
+	$sql=$this->db->where('s.id',$id);
+	$res=$this->db->get();
+	$toprint1=$res->row();
+	return $toprint1;
+	}
+	
+	public function toprint2($id)
+	//called by *Details/printbill
+	{
+	$sql=$this->db->select('d.quantity, d.discount, d.cashdisc, i.cat_id, i.code, i.rate, i.title, i.hsn, i.grate');
+	$sql=$this->db->from ('details as d');
+	$sql=$this->db->join ('item as i', 'd.item_id=i.id');
+	$sql=$this->db->where('d.summary_id',$id);
+	$res=$this->db->get();
+	$toprint2=$res->result_array();
+	return $toprint2;
+}
+	public function reports($sdate, $edate)
+	//called by *Reports/reports, *Reports/gstreports
+	{
+	$sql=$this->db->select('s.id, s.tr_code, s.tr_no, s.date, s.party_id, s.expenses, s.p_status, p.code, p.name, p.city, p.st, p.gstno, d.item_id, d.quantity, d.discount, d.cashdisc, i.code as icode, i.rate, i.grate, i.hsn, t.location, t.descrip_1, t.descrip_2, i.cat_id');
+	$sql=$this->db->from ('summary as s');
+	$sql=$this->db->join ('party as p', 's.party_id=p.id');
+	$sql=$this->db->join ('details as d', 's.id=d.summary_id');
+	$sql=$this->db->join ('item as i', 'd.item_id=i.id');
+	$sql=$this->db->join ('tran_type as t', 't.tr_code=s.tr_code');
+	$sql=$this->db->where('date>=',$sdate);
+	$sql=$this->db->where('date<=',$edate);
+	$sql=$this->db->order_by('date');
+	$sql=$this->db->get();
+	$report=$sql->result_array();
+	if ($report):
+	return $report;
+	else:
+	return false;
+	endif;
+	}
+	
+	
+	public function write_csv($header, $data, $file)
+	//called by *Reports/gstreports
+	{
+	$fp=fopen(SAVEPATH.$file,'w');
+	fputcsv($fp,$header,',');
+	foreach ($data as $fields){
+	fputcsv($fp,$fields,',');
+	}
+	fclose($fp);
+
+	}
+	
 	public function adddata($data)
-	//called by my_summary/add
+	//called by *Profo_Details/convert
 	{
 
 	if ($this->db->insert('summary',$data)):
@@ -34,6 +108,30 @@ class Summary_model extends CI_Model{
 	endif;
 	
 	}
+	
+	
+	public function getmaxid()
+	//called by *Profo_Details/convert
+	{
+	$res=$this->db->query('select max(id) as id from summary');
+	$summary_id=$res->row_array();
+	return $summary_id['id'];
+	}
+	
+	/*public function repo_bill($reports):
+	{
+	foreach ($reposts as $k=>$v):
+		$billwise[]['id']=$v['id'];
+	}*/
+
+	
+
+
+
+
+//not reqd
+/*
+
 	
 	public function getmaxid()
 	//called by my_summary/add
@@ -58,18 +156,6 @@ class Summary_model extends CI_Model{
 		return $row;
 	}
 	
-	public function getdescr($id)
-	//called by my_summary/edit, Details/show
-	{
-		$sql=$this->db->select('*');
-		$sql=$this->db->from('tran_type');
-		$sql=$this->db->join('summary', 'summary.tr_code=tran_type.tr_code');
-		$sql=$this->db->where('summary.id',$id);
-		$res=$this->db->get();
-		$trtype=$res->row();
-		return $trtype;
-	}
-	
 	public function update($data)
 	//called by My_Summary/edit
 	{
@@ -89,71 +175,6 @@ class Summary_model extends CI_Model{
 	$this->db->update('summary',array('expenses'=>0,'remark'=>"Cancelled",'date'=>date('Y-m-d')));
 	return true;
 	}
-	
-	public function toprint1($id)
-	//called by My_summary/printbill
-	{
-	$sql=$this->db->select('s.tr_code, s.tr_no, s.date, s.expenses, s.remark, s.p_status, p.name, p.city, p.st, p.gstno, t.location, t.descrip_1, t.descrip_2');
-	$sql=$this->db->from ('summary as s');
-	$sql=$this->db->join ('party as p', 's.party_id=p.id');
-	$sql=$this->db->join ('tran_type as t', 't.tr_code=s.tr_code');
-	$sql=$this->db->where('s.id',$id);
-	$res=$this->db->get();
-	$toprint1=$res->row();
-	return $toprint1;
-	}
-	
-	public function toprint2($id)
-	//called by My_summary/printbill
-	{
-	$sql=$this->db->select('d.quantity, d.discount, d.cashdisc, i.cat_id, i.code, i.rate, i.title, i.hsn, i.grate');
-	$sql=$this->db->from ('details as d');
-	$sql=$this->db->join ('item as i', 'd.item_id=i.id');
-	$sql=$this->db->where('d.summary_id',$id);
-	$res=$this->db->get();
-	$toprint2=$res->result_array();
-	return $toprint2;
-}
-	public function reports($sdate, $edate)
-	//called by My_Summary/reports
-	{
-	$sql=$this->db->select('s.id, s.tr_code, s.tr_no, s.date, s.party_id, s.expenses, s.p_status, p.code, p.name, p.city, p.st, p.gstno, d.item_id, d.quantity, d.discount, d.cashdisc, i.code as icode, i.rate, i.grate, i.hsn, t.location, t.descrip_1, t.descrip_2, i.cat_id');
-	$sql=$this->db->from ('summary as s');
-	$sql=$this->db->join ('party as p', 's.party_id=p.id');
-	$sql=$this->db->join ('details as d', 's.id=d.summary_id');
-	$sql=$this->db->join ('item as i', 'd.item_id=i.id');
-	$sql=$this->db->join ('tran_type as t', 't.tr_code=s.tr_code');
-	$sql=$this->db->where('date>=',$sdate);
-	$sql=$this->db->where('date<=',$edate);
-	$sql=$this->db->order_by('date');
-	$sql=$this->db->get();
-	$report=$sql->result_array();
-	if ($report):
-	return $report;
-	else:
-	return false;
-	endif;
-	}
-	
-	
-	public function write_csv($header, $data, $file)
-	//called by my_summary/gstreports
-	{
-	$fp=fopen(SAVEPATH.$file,'w');
-	fputcsv($fp,$header,',');
-	foreach ($data as $fields){
-	fputcsv($fp,$fields,',');
-	}
-	fclose($fp);
-
-	}
-	
-	/*public function repo_bill($reports):
-	{
-	foreach ($reposts as $k=>$v):
-		$billwise[]['id']=$v['id'];
-	}*/
-
 	public function b_reports($sdate, $edate)
 	{
 	$sql=$this->db->query("select summary.tr_code, summary.tr_no, summary.date, summary.party_id, summary.expenses, party.name, party.city, party.st, party.gstno, party.status, details.summary_id, tran_type.descrip_2,
@@ -184,6 +205,8 @@ return $res;
 $res=$sql->result_array();
 return $res;
 }
+
+*/
 /*round(sum(case when 
 	item_cat.name='Books' 
 	then 

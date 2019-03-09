@@ -8,7 +8,7 @@ class My_Trnf_Summary_model extends Grocery_crud_model{
 	
 	
 	public function trnf_summary($id){
-	//called by trnf_details/idprint
+	//called by *trnf_details/idprint
 	$sql=$this->db->select('trnf_summary.id, date, from_id, to_id, l1.description as loc_from, l2.description as loc_to' );
 	$sql=$this->db->from('trnf_summary');
 	$sql=$this->db->join('locations as l1', 'l1.id=from_id');

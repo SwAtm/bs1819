@@ -15,7 +15,7 @@ class My_Summary extends CI_Controller{
 		$this->load->model('Summary_model');
 		$this->load->model('Temp_details_model');
 		$this->load->model('Details_model');
-		$this->load->model('temp_bill_model');
+		//$this->load->model('temp_bill_model');
 		$this->load->model('temp_billwise_model');
 		$this->load->model('Company_model');
 		$this->output->enable_profiler(TRUE);
@@ -426,14 +426,15 @@ class My_Summary extends CI_Controller{
 							
 							
 								
-						
+				//data exists?		
 				else:			
 					echo "No Data <a href=".site_url('home/index').">Go Home</a><br>";
 					echo "<br>".$sdate;
 					echo "<br>".$edate;
 				endif;
-			
+			//dates alright?
 			endif;
+		//failed/submitted?
 		endif;
 		}
 		
@@ -526,7 +527,7 @@ class My_Summary extends CI_Controller{
 		//first run/failed validation
 		endif;
 		}
-
+/*
 		public function b_reports(){
 		$sdate=$this->input->post('sdate');
 			$edate=$this->input->post('edate');
@@ -556,7 +557,7 @@ class My_Summary extends CI_Controller{
 		echo "</pre>";
 		
 		
-		
+*/		
 		
 		
 		

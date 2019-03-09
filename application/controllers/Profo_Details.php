@@ -18,7 +18,11 @@ class Profo_Details extends CI_Controller{
 		$this->load->model('My_Profo_Details_model');
 		$this->load->model('Company_model');
 		$this->load->model('Item_model');
-		$this->load->model('Temp_details_model');
+		$this->load->model('Tran_type_model');
+		$this->load->model('Party_model');
+		$this->load->model('Summary_model');
+		$this->load->model('Details_model');
+		//$this->load->model('Temp_details_model');
 		
 		$this->load->library('html2pdf');
 	}
@@ -200,11 +204,21 @@ class Profo_Details extends CI_Controller{
 			$tbal=$tbal+($balance[$k]['bal']*$balance[$k]['rate']);
 			endforeach;
 		endif;
+	//get all tran types for sales
+	$trantype=$this->Tran_type_model->salescode();
+	print_r($trantype);
+	echo "Done";
+	//convert into an array for dropdown
+	foreach ($trantype as $vl):
+			$trdd[$vl['id']]=$vl['location'].$vl['descrip_1'].$vl['descrip_2'];
+	endforeach;
+	//print_r($trdd);	
 	$company = $this->Company_model->getall();
 	$data['party']=$party;
 	$data['balance']=$balance;
 	$data['company']=$company;
 	$data['tbalance']=$tbal;
+	$data['trdd']=$trdd;
 	$this->load->view('templates/header');	
 	$this->load->view('profo_details/balance', $data);
 	endif;
@@ -216,24 +230,67 @@ class Profo_Details extends CI_Controller{
 	$tbalance=$_POST['tbalance'];
 	$pid=$_POST['pid'];
 	//print_r($pid);
+	$tr_type_id=$_POST['tr_type'];
+	//echo $tr_type_id;
 	unset ($_POST['settleamt']);
 	unset ($_POST['tbalance']);
 	unset ($_POST['submit']);
 	unset ($_POST['pid']);
+	unset ($_POST['tr_type']);
 	$tdiscount=$tbalance-$settleamt;
 	$pdiscount=$tdiscount/$tbalance*100;
 	$pdiscount=number_format($pdiscount,2);
 	
+	//prepare for adding to summary
+	//party status may change over time. Need to get the present status and add it to summary row.
+		$party=$this->Party_model->getdetails($pid);
+		if (!$party->status or null==$party->status):
+			$party->status='UNRD';
+		endif;
+		$summ_add['p_status']=$party->status;
+		
+		//get tr_code for this tr_type_id
+		$trcode=$this->Tran_type_model->gettrcode($tr_type_id);
+		$summ_add['tr_code']=$trcode->tr_code;
+		
+		//get tr_no for this tr_code
+		$trno=$this->Summary_model->gettranno($trcode->tr_code);
+		$summ_add['tr_no']=$trno;
+		
+		//add today's date
+		$summ_add['date']=date("Y-m-d");
+		
+		//add rest of the fields
+		$summ_add['tran_type_id']=$tr_type_id;
+		$summ_add['party_id']=$pid;
+		$summ_add['expenses']=0;
+		$summ_add['remark']='Converted from Proforma';
+			
+	
+	
+	//prepare for adding to details
 	$list=array();
+	
+	
+		
+	//start transaction
 	$this->db->trans_start();
-	foreach ($_POST as $k=>$v):
-		$list[$k]['quantity']=$v['bal'];
+	
+	//add to summary
+	if ($this->Summary_model->adddata($summ_add)):
+		$summary_id=$this->Summary_model->getmaxid();
+		print_r($summary_id)."done";
+		//add to details row by row
+		foreach ($_POST as $k=>$v):
+		$list[$k]['summary_id']=$summary_id;
 		$list[$k]['item_id']=$v['item_id'];
+		$list[$k]['quantity']=$v['bal'];
 		$list[$k]['discount']=$pdiscount;
 		$list[$k]['cashdisc']=0;
-		$this->Temp_details_model->adddata($list[$k]);
-	endforeach;
-		
+		$this->Details_model->adddata($list[$k]);
+		endforeach;
+	endif;	
+				
 	//get p_sum_ids for the party
 	$p_s_ids=$this->My_Profo_Summary_model->get_ids_party($pid);
 	
@@ -246,21 +303,17 @@ class Profo_Details extends CI_Controller{
 	
 	//delet everything for the party in profo_summary
 	$this->My_Profo_Summary_model->delet_party($pid);
+	
+	
 	$this->db->trans_complete();
 	
 	if ($this->db->trans_status()===false):
 		echo "Could not convert.<a href=".site_url('home').">Go Home</a>";
 	else:
-		redirect (site_url('Temp_details/index'));
+		echo "<a href=" .site_url('home').">All done. Go Home </a href>";
 				
 	endif;
-	
-	
-	
-	
-	
-	
-	}
+}
 
 
 }

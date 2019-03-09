@@ -7,7 +7,7 @@ class My_Trnf_Details_model extends Grocery_crud_model{
 	}
 
 	public function trnf_details($id){
-	//called by trnf_details/idprint
+	//called by *trnf_details/idprint
 	$sql=$this->db->select('item.title, item.rate, quantity' );
 	$sql=$this->db->from('trnf_details');
 	$sql=$this->db->join('item', 'item.id=item_id');
@@ -24,7 +24,7 @@ class My_Trnf_Details_model extends Grocery_crud_model{
 	}*/
 	
 	public function get_trnfs($id, $lid){
-	//called by Item/det_stock
+	//called by *Item/det_stock
 	$sql=$this->db->query("select tr.tr_id, tr.tr_date, locations.description, tr.quantity from
 	locations
 	join

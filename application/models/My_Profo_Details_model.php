@@ -7,7 +7,7 @@ class My_Profo_Details_model extends Grocery_crud_model{
 	}
 
 	public function profo_details($id){
-	//called by profo_details/idprint
+	//called by *profo_details/idprint
 	$sql=$this->db->select('item.title, item.rate, quantity' );
 	$sql=$this->db->from('proforma_details');
 	$sql=$this->db->join('item', 'item.id=item_id');
@@ -19,7 +19,7 @@ class My_Profo_Details_model extends Grocery_crud_model{
 	}
 
 	public function get_balance($pid){
-		//called by profo_details/id_balance, details
+		//called by profo_details/*id_balance, *details
 	$res="select pd.item_id, item.title, item.rate, 
 	sum(case when ps.o_i='out' then pd.quantity else 0 end) as qout, 
 	sum(case when ps.o_i='in' then pd.quantity else 0 end) as qin 
@@ -38,7 +38,7 @@ class My_Profo_Details_model extends Grocery_crud_model{
 	}
 	
 	public function get_balance_iid($pid,$iid){
-		//called by Profo_Details/check_qty
+		//called by *Profo_Details/check_qty
 	$res="select pd.item_id, item.title, item.rate, 
 	sum(case when ps.o_i='out' then pd.quantity else 0 end) as qout, 
 	sum(case when ps.o_i='in' then pd.quantity else 0 end) as qin 
@@ -59,7 +59,7 @@ class My_Profo_Details_model extends Grocery_crud_model{
 	
 	
 	public function delet_psid($psid){
-		//called by profo_details/convert
+		//called by *profo_details/convert
 	$sql=$this->db->where('p_sum_id',$psid);
 	$sql=$this->db->delete('proforma_details');
 	

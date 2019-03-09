@@ -6,18 +6,8 @@ class Party_model extends CI_Model{
 	}
 
 
-public function getall()
-	//called by my_sumamry/add
-	
-	{
-	$sql=$this->db->select('*');
-	$sql=$this->db->from ('party');
-	$sql=$this->db->order_by('name','ASC');
-	$sql=$this->db->get();
-	return $sql->result_array();
-	}
-
 	public function getdetails($id)
+	//called by *Summary/get_trcode_etc, *Profo_Details/convert
 	{
 	$sql=$this->db->select('*');
 	$sql=$this->db->from ('party');
@@ -28,6 +18,19 @@ public function getall()
 	}	
 
 
+	//not reqd
+	/*
+	public function getall()
+	//called by my_sumamry/add
+	
+	{
+	$sql=$this->db->select('*');
+	$sql=$this->db->from ('party');
+	$sql=$this->db->order_by('name','ASC');
+	$sql=$this->db->get();
+	return $sql->result_array();
+	}
+	*/
 
 
 }

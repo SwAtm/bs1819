@@ -6,7 +6,7 @@ class Op_Invent_model extends CI_Model{
 	}
 	
 	public function op_stock($id, $lid){
-	//called by Item/det_stock
+	//called by *Item/det_stock
 	$sql=$this->db->query("select locations.id, locations.description, opstck
 	from locations 
 	left join 
