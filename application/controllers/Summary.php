@@ -30,7 +30,7 @@ class Summary extends CI_Controller{
 			$crud->set_table('summary')
 				->set_subject('Transaction')
 				->order_by('id','desc')
-				->columns('tran_type_id','tr_code','tr_no','date', 'party_id', 'amount', 'remark')
+				->columns('tran_type_id','tr_code','tr_no','date', 'party_id', 'amount')
 				->display_as('tran_type_id','Transaction Type')
 				->display_as('tr_code','Trn Code')
 				->display_as('tr_no','Trn Number')

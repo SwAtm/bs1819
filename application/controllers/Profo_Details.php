@@ -226,6 +226,18 @@ class Profo_Details extends CI_Controller{
 
 	public function convert()
 	{
+	//check date
+	$dt=date('Y-m-d');
+	$sdt=strtotime($dt);
+	$cmp=$this->Company_model->getall();
+	$frdate=$cmp->from_date;
+	$todate=$cmp->to_date;
+	$frdate=strtotime($frdate);
+	$todate=strtotime($todate);
+	if ($sdt<$frdate or $sdt>$todate):
+		die ("You are out of date range. <a href=".site_url('home').">Go Home</a>");
+	endif;
+	
 	$settleamt=$_POST['settleamt'];
 	$tbalance=$_POST['tbalance'];
 	$pid=$_POST['pid'];
